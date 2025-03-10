@@ -1,100 +1,94 @@
-import Image from "next/image";
+// import Image from "next/image";
+
+// font-[family-name:var(--font-geist-sans)]
+// font-[family-name:var(--font-geist-mono)]
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-stone-950 text-stone-50 font-[family-name:var(--font-geist-mono)] p-8">
+      {/* Hero section with company name */}
+      <main className="max-w-4xl mx-auto pt-12">
+        <div className="mb-20">
+          <div className="mb-6">
+            <div className="text-3xl font-bold text-amber-500 mb-2">KAIROS</div>
+            <div className="text-sm text-stone-500">// proactive agents with full company context</div>
+          </div>
+          <h1 className="text-3xl sm:text-4xl mb-4">Automate your non-technical workflows with AI that understands your business.</h1>
+          <p className="text-stone-400 text-lg mb-8">Agents that know everything happening in your company and act on your behalf.</p>
+          <div className="flex space-x-4">
+            <button className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm">Deploy your agent</button>
+            <button className="px-5 py-2 border border-stone-400 hover:bg-stone-800 rounded-sm">Learn more →</button>
+          </div>
+          
+          {/* <div className="flex space-x-8 mt-16 text-sm text-stone-500">
+            <a href="#features" className="hover:text-blue-400">Features</a>
+            <a href="#use-cases" className="hover:text-blue-400">Use Cases</a>
+            <a href="#documentation" className="hover:text-blue-400">Documentation</a>
+            <a href="#about" className="hover:text-blue-400">About</a>
+          </div> */}
+        </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        {/* Features */}
+        <div id="features" className="mb-16">
+          <h2 className="text-2xl mb-6 border-b border-stone-800 pb-2">## Features</h2>
+          <ul className="space-y-4">
+            <li className="flex">
+              <span className="text-amber-500 mr-2">*</span>
+              <div>
+                <p className="font-bold">Non-technical task automation</p>
+                <p className="text-stone-400">Customer outreach, lead generation, report preparation, and more.</p>
+              </div>
+            </li>
+            <li className="flex">
+              <span className="text-amber-500 mr-2">*</span>
+              <div>
+                <p className="font-bold">Complete company knowledge</p>
+                <p className="text-stone-400">Agents understand your data, processes, and communication history.</p>
+              </div>
+            </li>
+            <li className="flex">
+              <span className="text-amber-500 mr-2">*</span>
+              <div>
+                <p className="font-bold">Proactive assistance</p>
+                <p className="text-stone-400">Agents identify opportunities and take action without explicit prompting.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        {/* Trusted by */}
+        {/* <div className="mb-16">
+          <h2 className="text-sm uppercase text-stone-500 mb-6 text-center">Trusted by innovative teams</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {['Company A', 'Company B', 'Company C', 'Company D'].map((company, i) => (
+              <div key={i} className="bg-stone-900 h-12 flex items-center justify-center text-stone-400">
+                {company}
+              </div>
+            ))}
+          </div>
+        </div> */}
+
+        {/* Vision */}
+        <div className="mb-16 p-6 border border-stone-800 rounded-sm">
+          <h2 className="text-xl mb-4">Our vision</h2>
+          <p className="text-stone-400">
+            We see a future where companies are built by small teams enabled by AI. 
+            As LLMs improve exponentially, they'll handle unspecialized work, 
+            while humans focus on company direction and product sense.
+          </p>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      
+      {/* Footer */}
+      <footer className="border-t border-stone-800 mt-20 pt-8 text-stone-500 text-sm">
+        <div className="flex justify-between flex-col sm:flex-row">
+          <div>© 2023 Kairos. All rights reserved.</div>
+          {/* <div className="flex space-x-4">
+            <a href="#" className="hover:text-stone-300">Privacy</a>
+            <a href="#" className="hover:text-stone-300">Terms</a>
+            <a href="#" className="hover:text-stone-300">Contact</a>
+          </div> */}
+        </div>
       </footer>
     </div>
   );
