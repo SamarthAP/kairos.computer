@@ -11,7 +11,7 @@ export default function Home() {
         <div className="mb-20">
           <div className="mb-6">
             <div className="text-3xl font-bold text-amber-500 mb-2">KAIROS</div>
-            <div className="text-sm text-stone-500">// proactive agents with full company context</div>
+            <div className="text-sm text-stone-500">{"// proactive agents with full company context"}</div>
           </div>
           <h1 className="text-3xl sm:text-4xl mb-4">Automate your non-technical workflows with AI that understands your business.</h1>
           <p className="text-stone-400 text-lg mb-8">Agents that know everything happening in your company and act on your behalf.</p>
@@ -72,9 +72,10 @@ export default function Home() {
         <div className="mb-16 p-6 border border-stone-800 rounded-sm">
           <h2 className="text-xl mb-4">Our vision</h2>
           <p className="text-stone-400">
-            We see a future where companies are built by small teams enabled by AI. 
-            As LLMs improve exponentially, they'll handle unspecialized work, 
-            while humans focus on company direction and product sense.
+            We envision a future where companies thrive through small, focused teams empowered by AI. 
+            As language models continue their rapid advancement, they&apos;ll increasingly handle routine 
+            operational tasks, freeing human creativity to focus on strategic direction and 
+            product innovation.
           </p>
         </div>
       </main>
