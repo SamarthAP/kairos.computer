@@ -48,9 +48,9 @@ export default function Example() {
         &quot;Create a competitive analysis report for our new product feature&quot;
       </motion.div>
       
-      <div className="space-y-4 mb-6 relative" style={{ minHeight: "180px" }}>
+      <div className="space-y-4 mb-6 relative overflow-hidden" style={{ minHeight: "180px" }}>
         <motion.div 
-          className="border-l-2 border-amber-500 pl-4 absolute w-full"
+          className="border-l-2 border-amber-500 pl-4 relative w-full"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.5 }}
@@ -90,7 +90,7 @@ export default function Example() {
       </div>
       
       <motion.div 
-        className="text-stone-400 italic absolute bottom-6 left-6 right-6"
+        className="text-stone-400 italic mt-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 5.0, duration: 0.8 }}
