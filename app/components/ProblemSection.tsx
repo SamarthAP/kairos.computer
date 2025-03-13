@@ -38,12 +38,12 @@ export default function ProblemSection() {
         {problems.map((problem, index) => (
           <motion.div 
             key={index}
-            className="p-6 border border-stone-800 rounded-sm relative overflow-hidden group"
+            className="p-6 border border-stone-800 rounded-sm relative overflow-hidden group cursor-pointer"
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
+            transition={{ duration: 0.4, delay: 0 }}
             whileHover={{ 
               borderColor: "rgb(217 119 6)", 
               backgroundColor: "rgba(40, 36, 30, 0.6)" 
@@ -67,12 +67,12 @@ export default function ProblemSection() {
             
             {/* Limitation tag */}
             <motion.div 
-              className="absolute bottom-0 left-0 right-0 bg-stone-800 py-2 px-4 text-xs text-amber-500/80"
+              className="absolute bottom-0 left-0 right-0 bg-stone-800 py-2 px-4 text-xs text-amber-500/80 h-[48px]"
               initial={{ y: 40 }}
               animate={{ y: hoveredCard === index ? 0 : 40 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="flex items-center">
+              <div className="flex items-center h-full">
                 <span className="mr-2">⚠️</span>
                 <span>{problem.limitation}</span>
               </div>
