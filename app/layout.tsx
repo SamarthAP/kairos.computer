@@ -24,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta property="og:image" content="/api/og" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
