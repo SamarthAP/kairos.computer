@@ -6,6 +6,10 @@ import { useState, useEffect, useRef } from "react";
 // import ProblemSection from "./components/ProblemSection";
 // import KairosApproach from "./components/KairosApproach";
 import EarlyAccessModal from "./components/EarlyAccessModal"; // Import the modal
+import WorkflowDetails from "./components/WorkflowDetails"; // Add this import at the top with other imports
+import RunWorkflowDetails, {
+  WorkflowEvent,
+} from "./components/RunWorkflowDetails"; // Add this import at the top with other imports
 // font-[family-name:var(--font-geist-sans)]
 // font-[family-name:var(--font-geist-mono)]
 
@@ -14,11 +18,11 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
 
   // --- State for the interactive section ---
-  const industries = ["Healthcare", "Finance", "E-Commerce", "HR"];
+  const industries = ["Finance", "E-Commerce", "HR", "Healthcare"];
   const steps = [
-    "1. Record your workflow",
-    "2. Confirm workflow details",
-    "3. Run workflow",
+    "1. Show Kairos your task",
+    "2. Review your automation",
+    "3. Let Kairos handle it",
   ];
 
   // Mock video sources - replace with actual video URLs or components
@@ -45,6 +49,194 @@ export default function Home() {
     ],
   };
 
+  const workflowDetails = {
+    Healthcare: {
+      name: "NAME",
+      summary: "SUMMARY",
+      inputs: ["INPUT1", "INPUT2"],
+      integrations: ["INTEGRATION1", "INTEGRATION2"],
+    },
+    Finance: {
+      name: "Invoice Organization",
+      summary:
+        "Organizing your invoices from Gmail into Google Sheets and Drive",
+      inputs: ["Google Drive Link", "Google Sheets Link"],
+      integrations: ["Google Drive", "Google Sheets", "Gmail"],
+    },
+    "E-Commerce": {
+      name: "E-Commerce Refunds",
+      summary: "Handle refund requests from customers in email.",
+      inputs: ["Refund Policy Link", "Google Sheets Link"],
+      integrations: ["Gmail", "Google Sheets"],
+    },
+    HR: {
+      name: "Applicant Screening",
+      summary: "Screen applicants for a Frontend Engineer role",
+      inputs: ["Google Sheets Link", "Hiring Page Link"],
+      integrations: ["Google Sheets"],
+    },
+  };
+
+  const runWorkflowDetails = {
+    Healthcare: {
+      inputs: {
+        "Refund Policy Link":
+          "https://rainbow-vinyl-ce8.notion.site/Return-and-exchange-policy-1cc4c91f0682802fb7e0f75fad0cca05",
+        "Google Sheets Link":
+          "https://docs.google.com/spreadsheets/d/1teF-yAAJf9WYRWbNff11O8w80qurZvVby2-zlXuHwME/edit?usp=sharing",
+      },
+      events: [
+        {
+          title: "Workflow triggered from email",
+          description: "Found email with invoice attachment.",
+          type: "STARTED",
+        },
+        {
+          title: "Downloading invoice",
+          description: "Downloading invoice 'harris_invoice.pdf'.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Reading invoice",
+          description: "Extracting vendor name, date, amount and invoice id.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Uploading to Google Drive",
+          description:
+            "Uploading invoice with filename 'Harris Consulting_04/03/2024_3230.00'.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Updating Google Sheets",
+          description:
+            "Adding a new row to the sheet with the invoice details.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Workflow execution complete",
+          description: "Successfully processed invoice.",
+          type: "COMPLETED",
+        },
+      ],
+    },
+    Finance: {
+      inputs: {
+        "Google Drive Link": "https://drive.google.com/drive/folder/0/abc",
+        "Google Sheets Link": "https://docs.google.com/spreadsheets/d/abc",
+      },
+      events: [
+        {
+          title: "Workflow triggered from email",
+          description: "Found email with invoice attachment.",
+          type: "STARTED",
+        },
+        {
+          title: "Downloading invoice",
+          description: "Downloading invoice 'harris_invoice.pdf'.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Reading invoice",
+          description: "Extracting vendor name, date, amount and invoice id.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Uploading to Google Drive",
+          description:
+            "Uploading invoice with filename 'Harris Consulting_04/03/2024_3230.00'.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Updating Google Sheets",
+          description:
+            "Adding a new row to the sheet with the invoice details.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Workflow execution complete",
+          description: "Successfully processed invoice.",
+          type: "COMPLETED",
+        },
+      ],
+    },
+    "E-Commerce": {
+      inputs: {
+        "Refund Policy Link":
+          "https://kairos.notion.site/Refund-Policy-Link-1234567890",
+        "Google Sheets Link": "https://docs.google.com/spreadsheets/d/abc",
+      },
+      events: [
+        {
+          title: "Workflow triggered from email",
+          description: "Found email with refund request.",
+          type: "STARTED",
+        },
+        {
+          title: "Reviewing refund policy",
+          description:
+            "Checking if the refund policy allows for the requested refund.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Updating Google Sheets",
+          description: "Accepting refund request.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Sending email",
+          description:
+            "Replying to customer with acceptance of refund request.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Workflow execution complete",
+          description: "Successfully handled refund request.",
+          type: "COMPLETED",
+        },
+      ],
+    },
+    HR: {
+      inputs: {
+        "Google Sheets Link": "https://docs.google.com/spreadsheets/d/abc",
+        "Hiring Page Link":
+          "https://kairos.notion.site/Hiring-Page-Link-1234567890",
+      },
+      events: [
+        {
+          title: "Workflow triggered manually",
+          description: "Executing workflow.",
+          type: "STARTED",
+        },
+        {
+          title: "Reading role description",
+          description: "Extracting information about the role.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Reading Google Sheet",
+          description: "Extracting all applicant details.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Evaluating applicant profiles.",
+          description: "Reading LinkedIn, GitHub and resume of each applicant.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Updating Google Sheet with evaluations",
+          description: "Adding evaluation results to the sheet.",
+          type: "PROCESSING",
+        },
+        {
+          title: "Workflow execution complete",
+          description: "Successfully screened applicants.",
+          type: "COMPLETED",
+        },
+      ],
+    },
+  };
+
   // Add descriptions for each industry workflow
   const industryDescriptions: Record<string, string> = {
     Healthcare: "Handling patient inquiries and scheduling appointments.",
@@ -53,253 +245,65 @@ export default function Home() {
     HR: "Evaluating applicant profiles for job openings.",
   };
 
-  // Use index for industry selection - NOW ONLY CLICK DRIVEN
+  // Simplified state management with click-driven interaction
   const [selectedIndustryIndex, setSelectedIndustryIndex] = useState(0);
-  const selectedIndustry = industries[selectedIndustryIndex]; // Derived state
-
-  // Step index is driven by SCROLL and TIMER
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  // Restore state for timer control
-  const [isPlaying, setIsPlaying] = useState(true); // Controls step auto-play timer
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  // Add a ref for the scroll-end detection timeout
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const sectionRef = useRef<HTMLDivElement>(null); // Ref for the main section container
-  const stickyContentRef = useRef<HTMLDivElement>(null); // Ref for the content that sticks
+  const selectedIndustry = industries[selectedIndustryIndex];
 
   // --- Handlers ---
-  const handleOpenModal = () => setShowModal(true); // Function to open modal
+  const handleOpenModal = () => setShowModal(true);
 
-  // Allow clicking tabs to jump to an industry
+  // Handle industry tab selection
   const handleIndustryClick = (index: number) => {
     setSelectedIndustryIndex(index);
-    setCurrentStepIndex(0); // Reset step when industry changes
-    // Force playing state and let useEffect handle timer reset
-    setIsPlaying(true);
-    // Clear any pending scroll-end timeout
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-
-    // Scroll to the top of the section when changing industry manually
-    if (sectionRef.current) {
-      const sectionTop = sectionRef.current.offsetTop;
-      window.scrollTo({
-        top: sectionTop, // Scroll to the start of the interactive section
-        behavior: "smooth",
-      });
-    }
+    setCurrentStepIndex(0); // Reset to first step
   };
 
+  // Handle step selection
   const handleStepClick = (index: number) => {
     setCurrentStepIndex(index);
-    // Force playing state and let useEffect handle timer reset
-    setIsPlaying(true);
-    // Clear any pending scroll-end timeout
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-
-    // --- Scroll to the approximate position for the clicked step ---
-    if (sectionRef.current && stickyContentRef.current) {
-      const sectionTop = sectionRef.current.offsetTop;
-      // const vh = window.innerHeight;
-      const sectionHeight = sectionRef.current.offsetHeight;
-      const stickyHeight = stickyContentRef.current.offsetHeight;
-      const scrollableDistance = sectionHeight - stickyHeight;
-      const targetScrollInSection =
-        ((index + 0.5) / steps.length) * scrollableDistance;
-
-      window.scrollTo({
-        top: sectionTop + targetScrollInSection,
-        behavior: "smooth",
-      });
-    }
   };
 
-  // --- Restore Timer Logic ---
-  const resetTimer = () => {
+  // Timer for auto-progression through steps
+  useEffect(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
-    // Only start timer if playing is enabled
-    if (isPlaying) {
-      timerRef.current = setTimeout(() => {
-        // Advance step index, looping back to 0
-        setCurrentStepIndex((prevIndex) => (prevIndex + 1) % steps.length);
-      }, 5000); // 5 seconds - Can be adjusted
-    }
-  };
 
-  // --- Effects ---
+    timerRef.current = setTimeout(() => {
+      setCurrentStepIndex((prevIndex) => (prevIndex + 1) % steps.length);
+    }, 7000);
 
-  // --- Restore Effect for automatic step progression timer ---
-  useEffect(() => {
-    resetTimer(); // Call resetTimer whenever the dependencies change
     return () => {
-      // Cleanup timer on unmount or dependency change
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
     };
-    // Dependencies: current step, selected industry (to restart timer), playing state, and steps.length
-  }, [currentStepIndex, selectedIndustryIndex, isPlaying, steps.length]);
-
-  // --- Combined Effect for Scroll Listener & Sticky Observer ---
-  useEffect(() => {
-    let isPausedByObserver = false;
-
-    const handleScroll = () => {
-      // --- Clear previous scroll-end timeout ---
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-
-      if (!sectionRef.current || !stickyContentRef.current) return;
-
-      const sectionTop = sectionRef.current.offsetTop;
-      const sectionHeight = sectionRef.current.offsetHeight;
-      const stickyHeight = stickyContentRef.current.offsetHeight;
-      const scrollStart = sectionTop;
-      const scrollEnd = sectionTop + sectionHeight - stickyHeight;
-      const currentScroll = window.scrollY;
-      const isInScrollZone =
-        currentScroll >= scrollStart && currentScroll <= scrollEnd;
-
-      // --- Handle Playing State ---
-      if (isInScrollZone) {
-        // If we are in the zone, try to play, unless the observer paused it
-        if (!isPausedByObserver) {
-          // Use functional update to prevent stale state if updates happen quickly
-          setIsPlaying((prev) => (prev ? prev : true)); // Set to true only if it was false
-        }
-      } else {
-        // If outside the scroll zone, definitely pause
-        setIsPlaying((prev) => (!prev ? prev : false)); // Set to false only if it was true
-      }
-
-      // --- Handle Step Index ---
-      if (isInScrollZone) {
-        const scrollDistance = scrollEnd - scrollStart;
-        const scrollInSection = currentScroll - scrollStart;
-        const progress =
-          scrollDistance > 0 ? scrollInSection / scrollDistance : 0;
-
-        let newStepIndex = Math.min(
-          Math.floor(progress * steps.length),
-          steps.length - 1
-        );
-        newStepIndex = Math.max(0, newStepIndex);
-
-        // Update state only if the step index actually changes
-        // This will trigger the timer useEffect to reset the timer
-        setCurrentStepIndex((prevIndex) => {
-          if (newStepIndex !== prevIndex) {
-            // console.log(`Scroll changes step to: ${newStepIndex}`); // Optional logging
-            // If scroll changes the step, PAUSE the auto-timer immediately
-            setIsPlaying(false);
-            if (timerRef.current) {
-              clearTimeout(timerRef.current); // Clear the main timer
-            }
-            return newStepIndex;
-          }
-          return prevIndex;
-        });
-
-        // --- Set a timeout to resume playing AFTER scrolling stops ---
-        // This runs on *every* scroll event within the zone
-        scrollTimeoutRef.current = setTimeout(() => {
-          // Only resume playing if the observer hasn't paused us
-          if (!isPausedByObserver) {
-            setIsPlaying(true); // Re-enable timer via state change
-          }
-        }, 150); // Resume playing 150ms after the last scroll event
-      } else if (currentScroll < scrollStart) {
-        // If scrolled above, ensure step is 0
-        setCurrentStepIndex((prevIndex) => (prevIndex !== 0 ? 0 : prevIndex));
-      } else {
-        // currentScroll > scrollEnd
-        // If scrolled below, ensure step is the last one
-        setCurrentStepIndex((prevIndex) =>
-          prevIndex !== steps.length - 1 ? steps.length - 1 : prevIndex
-        );
-      }
-
-      // Observer logic runs independently to set isPausedByObserver
-    };
-
-    // --- Restore Sticky Section Observer for Pausing ---
-    const stickyObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) {
-          isPausedByObserver = true;
-          setIsPlaying(false);
-          if (timerRef.current) {
-            clearTimeout(timerRef.current);
-          }
-          // Clear scroll timeout too, as we are pausing definitively
-          if (scrollTimeoutRef.current) {
-            clearTimeout(scrollTimeoutRef.current);
-          }
-        } else {
-          isPausedByObserver = false;
-          // Don't automatically resume here. Let scroll/clicks handle it.
-          // We could call handleScroll() to immediately check position if needed.
-          // handleScroll();
-        }
-      },
-      {
-        root: null,
-        threshold: 0.1, // If less than 10% is visible, consider it out of view
-      }
-    );
-
-    const currentStickyContent = stickyContentRef.current;
-    if (currentStickyContent) {
-      stickyObserver.observe(currentStickyContent);
-    }
-
-    // Add scroll listener
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check on mount
-
-    return () => {
-      // Cleanup listeners and timers
-      window.removeEventListener("scroll", handleScroll);
-      if (currentStickyContent) {
-        stickyObserver.unobserve(currentStickyContent);
-      }
-      // TimerRef cleared by useEffect, but clear here too for safety
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-      // Make sure to clear the scroll timeout on unmount
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, [steps.length]); // Re-run if number of steps changes
+  }, [currentStepIndex, steps.length]);
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-50 font-[family-name:var(--font-geist-mono)]">
       {/* Hero section */}
       <main className="max-w-4xl mx-auto pt-12 px-8">
-        {" "}
-        {/* Add horizontal padding back here */}
         <div className="mb-20">
           <div className="mb-6">
             <div className="text-3xl font-bold text-amber-500 mb-2">KAIROS</div>
             <div className="text-sm text-stone-500">
-              {"// turn screen recordings into automations"}
+              {"// Effortless automation for any task"}
             </div>
           </div>
           <h1 className="text-3xl sm:text-5xl mb-6 font-bold">
-            Show it once. Automate it forever.
+            Free Yourself From Repetitive Work.
           </h1>
           <p className="text-stone-400 text-xl mb-8">
-            Stop the repetitive clicks. Record your screen performing any
-            workflow, and Kairos builds an AI agent to automate it.
+            Show Kairos your tedious tasks once, and let it automate them
+            forever.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={handleOpenModal} // Add onClick handler
+              onClick={handleOpenModal}
               className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold"
             >
               Request early access
@@ -309,170 +313,182 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </main>{" "}
-      {/* Correctly close the first main tag */}
-      {/* --- See it in action Section (Scroll Container) --- */}
-      {/*
-            Set height based on number of steps now.
-            Increase multiplier (e.g., 150vh) to require more scrolling per step.
-        */}
-      <div
-        ref={sectionRef}
-        className="relative"
-        // Update height based on steps, increase multiplier for longer scroll threshold
-        style={{ height: `${steps.length * 225}vh` }} // Using 225vh from previous state
-      >
-        {/* Sticky Content Area */}
-        <div
-          ref={stickyContentRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center px-8 bg-stone-950"
-        >
-          {" "}
-          {/* Stick to top, full viewport height */}
-          {/* Central column for content within the sticky area */}
-          <div className="max-w-4xl mx-auto w-full px-8">
-            <h2 className="text-2xl mb-6 border-b border-stone-800 pb-2 text-stone-50">
-              ## See it in action
-            </h2>
+      </main>
 
-            {/* Industry Tabs */}
-            <div className="flex gap-2 pb-3 overflow-x-auto">
-              {industries.map((industry, index) => (
-                <button
-                  key={industry}
-                  // Update click handler to use index
-                  onClick={() => handleIndustryClick(index)}
-                  className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap ${
-                    selectedIndustryIndex === index // Use index for styling
-                      ? "bg-amber-600 text-stone-950 font-bold"
-                      : "bg-stone-800 hover:bg-stone-700 text-stone-300"
-                  }`}
-                >
-                  {industry}
-                </button>
-              ))}
+      {/* Interactive Demo Section - Simplified */}
+      <div className="py-16 bg-stone-950">
+        <div className="max-w-4xl mx-auto px-8">
+          <h2 className="text-2xl mb-6 border-b border-stone-800 pb-2 text-stone-50">
+            ## See How You Can Automate Anything
+          </h2>
+
+          {/* Industry Tabs */}
+          <div className="flex gap-2 pb-3 overflow-x-auto">
+            {industries.map((industry, index) => (
+              <button
+                key={industry}
+                onClick={() => handleIndustryClick(index)}
+                className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap ${
+                  selectedIndustryIndex === index
+                    ? "bg-amber-600 text-stone-950 font-bold"
+                    : "bg-stone-800 hover:bg-stone-700 text-stone-300"
+                }`}
+              >
+                {industry}
+              </button>
+            ))}
+          </div>
+
+          {/* Workflow Description */}
+          <p className="text-stone-400 mb-6 text-sm md:text-base">
+            {industryDescriptions[selectedIndustry]}
+          </p>
+
+          {/* Video Player Area */}
+          <div className="bg-stone-800 border border-stone-700 rounded-sm mb-6 overflow-hidden flex flex-col h-[450px] sm:h-[500px]">
+            {/* Browser shell header */}
+            <div className="bg-stone-800 border-b border-stone-700 py-2 px-3 flex items-center flex-shrink-0">
+              {/* Traffic lights */}
+              <div className="flex space-x-1.5 sm:space-x-2 mr-2 sm:mr-4">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
+              </div>
+
+              {/* Address bar - adjusted padding/text size */}
+              <div className="flex-1 bg-stone-700 rounded-sm py-0.5 px-2 sm:py-1 sm:px-3 text-[10px] sm:text-xs text-stone-400 flex items-center">
+                <span className="mr-1 sm:mr-2 text-xs">🔒</span>
+                <span className="truncate">kairos.computer</span>
+              </div>
+
+              {/* Browser actions - adjusted spacing/size */}
+              <div className="flex space-x-2 sm:space-x-3 ml-2 sm:ml-4 text-stone-400 text-xs sm:text-base">
+                <span>⟳</span>
+                <span>⋮</span>
+              </div>
             </div>
 
-            {/* Workflow Description */}
-            <p className="text-stone-400 mb-6 text-sm md:text-base">
-              {industryDescriptions[selectedIndustry]}
-            </p>
-
-            {/* Video Player Area */}
-            <div className="aspect-video bg-stone-900 border border-stone-800 rounded-sm mb-6 flex items-center justify-center">
-              {/* Video content using selectedIndustry derived from index */}
-              <p className="text-stone-500">
-                Video for: {selectedIndustry} - Step {currentStepIndex + 1}{" "}
-                <br />
-                (Source: {videoSources[selectedIndustry][currentStepIndex]})
-                {/* <video key={videoSources[selectedIndustry][currentStepIndex]} width="100%" height="100%" controls autoPlay muted loop>
-                            <source src={videoSources[selectedIndustry][currentStepIndex]} type="video/mp4" />
-                            Your browser does not support the video tag.
-                            </video> */}
-              </p>
-            </div>
-
-            {/* Step Indicators/Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between">
-              {steps.map((step, index) => (
-                <button
-                  key={step}
-                  onClick={() => handleStepClick(index)}
-                  className={`flex-1 p-4 rounded-sm border text-left transition-colors duration-300 ${
-                    currentStepIndex === index
-                      ? "bg-stone-800 border-amber-500"
-                      : "bg-stone-900 border-stone-700 hover:bg-stone-800"
-                  }`}
+            {/* Video content or WorkflowDetails depending on step */}
+            <div className="flex-1 bg-stone-800 flex items-center justify-center relative overflow-y-auto">
+              {currentStepIndex === 1 ? (
+                <WorkflowDetails
+                  workflowDetails={
+                    workflowDetails[
+                      selectedIndustry as keyof typeof workflowDetails
+                    ]
+                  }
+                />
+              ) : currentStepIndex === 2 ? (
+                <RunWorkflowDetails
+                  events={
+                    runWorkflowDetails[
+                      selectedIndustry as keyof typeof runWorkflowDetails
+                    ].events as WorkflowEvent[]
+                  }
+                />
+              ) : (
+                <video
+                  key={videoSources[selectedIndustry][currentStepIndex]}
+                  width="100%"
+                  height="100%"
+                  controls={false}
+                  autoPlay
+                  muted
+                  loop
+                  className="object-contain"
                 >
-                  <div
-                    className={`text-sm font-bold mb-1 ${
-                      currentStepIndex === index
-                        ? "text-amber-500"
-                        : "text-stone-400"
-                    }`}
-                  >
-                    STEP {index + 1}
+                  <source
+                    src={videoSources[selectedIndustry][currentStepIndex]}
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+
+              {/* Screen sharing notification - only show for step 1 - Improved Layout */}
+              {currentStepIndex === 0 && (
+                <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 bg-stone-800/90 backdrop-blur-sm text-white py-2 px-3 rounded-md shadow-lg flex items-center w-[90%] max-w-md sm:w-auto border border-stone-700">
+                  <div className="flex items-center text-center sm:text-left">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></div>
+                    <span className="text-stone-300 text-xs sm:text-sm whitespace-normal sm:whitespace-nowrap">
+                      https://kairos.computer is sharing your screen
+                    </span>
                   </div>
-                  <div className="text-stone-300">{step.substring(3)}</div>
-
-                  {/* Progress Bar - Animate only when current step AND playing */}
-                  {currentStepIndex === index && ( // Show structure if it's the current step
-                    <div className="mt-2 h-1 bg-stone-700 rounded-full overflow-hidden">
-                      {isPlaying ? ( // Animate only if playing is true
-                        <div
-                          className="h-full bg-amber-500 animate-progress"
-                          style={{ animationDuration: "5s" }} // Duration from timer
-                          // Key resets animation if step/industry changes *while playing*
-                          key={`${selectedIndustry}-${currentStepIndex}-playing`}
-                        ></div>
-                      ) : (
-                        // Show static bar at 0% width if paused
-                        <div
-                          className="h-full bg-amber-500"
-                          style={{ width: "0%" }}
-                          // Key resets animation if step/industry changes *while paused*
-                          key={`${selectedIndustry}-${currentStepIndex}-paused`}
-                        ></div>
-                      )}
-                    </div>
-                  )}
-                </button>
-              ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>{" "}
-        {/* End Sticky Content Area */}
-      </div>{" "}
-      {/* --- End See it in action Section --- */}
-      {/* Add a spacer div if needed to create space before the CTA if the tall section overlaps */}
-      {/* <div className="h-screen"></div> */}
+
+          {/* Step Indicators/Buttons - Progress Bar updated */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-between mb-4">
+            {steps.map((step, index) => (
+              <button
+                key={step}
+                onClick={() => handleStepClick(index)}
+                className={`flex-1 p-4 rounded-sm border text-left transition-colors duration-300 ${
+                  currentStepIndex === index
+                    ? "bg-stone-800 border-amber-500"
+                    : "bg-stone-900 border-stone-700 hover:bg-stone-800"
+                }`}
+              >
+                <div
+                  className={`text-sm font-bold mb-1 ${
+                    currentStepIndex === index
+                      ? "text-amber-500"
+                      : "text-stone-400"
+                  }`}
+                >
+                  STEP {index + 1}
+                </div>
+                <div className="text-stone-300">{step.substring(3)}</div>
+
+                {/* Progress Bar - Always animate when current step */}
+                {currentStepIndex === index && (
+                  <div className="mt-2 h-1 bg-stone-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-amber-500 animate-progress"
+                      style={{ animationDuration: "7s" }}
+                      key={`${selectedIndustry}-${currentStepIndex}`}
+                    ></div>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* --- Rest of the page content --- */}
       <main className="max-w-4xl mx-auto px-8">
-        {" "}
-        {/* Wrap remaining content */}
         {/* CTA */}
         <div className="mb-20 mt-20 text-center p-8 border border-stone-800 bg-stone-900 rounded-sm">
-          {" "}
-          {/* Add margin-top if needed */}
-          <h2 className="text-2xl mb-4">Ready to ditch manual workflows?</h2>
+          <h2 className="text-2xl mb-4">
+            Ready to Offload Your Tedious Tasks?
+          </h2>
           <p className="text-stone-400 mb-8">
-            Join our early access program. Turn recordings into automated
-            agents.
+            Get early access and let Kairos handle the repetitive work, so you
+            can focus on what matters.
           </p>
           <button
-            onClick={handleOpenModal} // Add onClick handler
+            onClick={handleOpenModal}
             className="px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg"
           >
             Request Early Access
           </button>
           <p className="mt-4 text-stone-500">Limited spots available</p>
         </div>
-      </main>{" "}
-      {/* Close the second main tag */}
+      </main>
+
       {/* Footer */}
       <footer className="border-t border-stone-800 mt-20 py-8 text-stone-500 text-sm">
         <div className="max-w-4xl mx-auto flex items-center flex-col sm:flex-row px-8">
-          {/* Add padding */}
           <div>kairos.computer</div>
           {/* ... footer links ... */}
         </div>
       </footer>
-      {/* --- Modal Component --- */}
+
+      {/* Modal Component */}
       <EarlyAccessModal show={showModal} onClose={() => setShowModal(false)} />
-      {/* --- CSS for Progress Bar (No Changes Needed) --- */}
-      <style jsx>{`
-        @keyframes progress {
-          from {
-            width: 0%;
-          }
-          to {
-            width: 100%;
-          }
-        }
-        .animate-progress {
-          animation: progress linear forwards;
-        }
-      `}</style>
     </div>
   );
 }
