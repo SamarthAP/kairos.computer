@@ -226,10 +226,12 @@ export default function Home() {
 
   // Add descriptions for each industry workflow
   const industryDescriptions: Record<string, string> = {
-    Healthcare: "Handling patient inquiries and scheduling appointments.",
-    Finance: "Organizing invoices in Google Suite.",
-    "E-Commerce": "Processing email refund requests.",
-    HR: "Evaluating applicant profiles for job openings.",
+    Healthcare:
+      "Respond to patients instantly and eliminate scheduling conflicts.",
+    Finance:
+      "Save hours weekly on invoice processing and eliminate data entry errors.",
+    "E-Commerce": "Handle customer refunds in minutes instead of hours.",
+    HR: "Screen candidates 5x faster and identify qualified applicants consistently.",
   };
 
   // Simplified state management with click-driven interaction
@@ -279,15 +281,15 @@ export default function Home() {
           <div className="mb-6">
             <div className="text-3xl font-bold text-amber-500 mb-2">KAIROS</div>
             <div className="text-sm text-stone-500">
-              {"// Effortless automation for any task"}
+              {"// Automate tasks by recording your screen"}
             </div>
           </div>
           <h1 className="text-3xl sm:text-5xl mb-6 font-bold">
-            Free Yourself From Repetitive Work.
+            Turn Repetitive Tasks into Automated Workflows.
           </h1>
           <p className="text-stone-400 text-xl mb-8">
-            Show Kairos your tedious tasks once, and let it automate them
-            forever.
+            Record and explain your task once. Kairos handles it forever. No
+            coding. No drag and drop. Just like training a co-worker.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
@@ -454,15 +456,15 @@ export default function Home() {
         {/* CTA */}
         <div className="mb-20 mt-20 text-center p-8 border border-stone-800 bg-stone-900 rounded-sm">
           <h2 className="text-2xl mb-4">
-            Ready to Offload Your Tedious Tasks?
+            Stop wasting hours on repetitive tasks.
           </h2>
           <p className="text-stone-400 mb-8">
-            Get early access and let Kairos handle the repetitive work, so you
-            can focus on what matters.
+            Join the early access program and reclaim your time for work that
+            actually matters.
           </p>
           <button
             onClick={handleOpenModal}
-            className="px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg cursor-pointer"
+            className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
           >
             Request Early Access
           </button>
