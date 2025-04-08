@@ -101,7 +101,7 @@ export default function EarlyAccessModal({
           >
             <button
               onClick={handleClose}
-              className="absolute top-3 right-3 text-stone-500 hover:text-stone-300 text-2xl font-bold"
+              className="absolute top-3 right-3 text-stone-500 hover:text-stone-300 text-2xl font-bold cursor-pointer"
               aria-label="Close modal"
             >
               &times; {/* Multiplication sign for 'X' */}
@@ -119,7 +119,7 @@ export default function EarlyAccessModal({
                 </p>
                 <button
                   onClick={handleClose}
-                  className="mt-6 px-6 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold"
+                  className="mt-6 px-6 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
                 >
                   Close
                 </button>
@@ -171,7 +171,7 @@ export default function EarlyAccessModal({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? "Submitting..." : "Submit Request"}
                 </button>

@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 // import ProblemSection from "./components/ProblemSection";
 // import KairosApproach from "./components/KairosApproach";
 import EarlyAccessModal from "./components/EarlyAccessModal"; // Import the modal
+import DemoVideoModal from "./components/DemoVideoModal"; // Add this import
 import WorkflowDetails from "./components/WorkflowDetails"; // Add this import at the top with other imports
 import RunWorkflowDetails, {
   WorkflowEvent,
@@ -14,8 +15,9 @@ import RunWorkflowDetails, {
 // font-[family-name:var(--font-geist-mono)]
 
 export default function Home() {
-  // --- State for modal ---
+  // --- State for modals ---
   const [showModal, setShowModal] = useState(false);
+  const [showDemoModal, setShowDemoModal] = useState(false);
 
   // --- State for the interactive section ---
   const industries = ["Finance", "E-Commerce", "HR", "Healthcare"];
@@ -51,10 +53,10 @@ export default function Home() {
 
   const workflowDetails = {
     Healthcare: {
-      name: "NAME",
-      summary: "SUMMARY",
-      inputs: ["INPUT1", "INPUT2"],
-      integrations: ["INTEGRATION1", "INTEGRATION2"],
+      name: "Email Triage",
+      summary: "Triage emails from your inbox.",
+      inputs: ["Physician Email Address"],
+      integrations: ["Gmail", "Google Calendar"],
     },
     Finance: {
       name: "Invoice Organization",
@@ -80,37 +82,22 @@ export default function Home() {
   const runWorkflowDetails = {
     Healthcare: {
       inputs: {
-        "Refund Policy Link":
-          "https://rainbow-vinyl-ce8.notion.site/Return-and-exchange-policy-1cc4c91f0682802fb7e0f75fad0cca05",
-        "Google Sheets Link":
-          "https://docs.google.com/spreadsheets/d/1teF-yAAJf9WYRWbNff11O8w80qurZvVby2-zlXuHwME/edit?usp=sharing",
+        "Physician Email Address": "physician@example.com",
       },
       events: [
         {
           title: "Workflow triggered from email",
-          description: "Found email with invoice attachment.",
+          description: "Found email with patient requesting an appointment.",
           type: "STARTED",
         },
         {
-          title: "Downloading invoice",
-          description: "Downloading invoice 'harris_invoice.pdf'.",
+          title: "Checking Google Calendar",
+          description: "Finding available time slots.",
           type: "PROCESSING",
         },
         {
-          title: "Reading invoice",
-          description: "Extracting vendor name, date, amount and invoice id.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Uploading to Google Drive",
-          description:
-            "Uploading invoice with filename 'Harris Consulting_04/03/2024_3230.00'.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Updating Google Sheets",
-          description:
-            "Adding a new row to the sheet with the invoice details.",
+          title: "Sending email",
+          description: "Replying to patient's question.",
           type: "PROCESSING",
         },
         {
@@ -254,6 +241,7 @@ export default function Home() {
 
   // --- Handlers ---
   const handleOpenModal = () => setShowModal(true);
+  const handleOpenDemoModal = () => setShowDemoModal(true);
 
   // Handle industry tab selection
   const handleIndustryClick = (index: number) => {
@@ -304,11 +292,14 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={handleOpenModal}
-              className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold"
+              className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
             >
               Request early access
             </button>
-            <button className="px-6 py-3 border border-stone-400 hover:bg-stone-800 rounded-sm">
+            <button
+              onClick={handleOpenDemoModal}
+              className="px-6 py-3 border border-stone-400 hover:bg-stone-800 rounded-sm cursor-pointer"
+            >
               Watch a demo →
             </button>
           </div>
@@ -328,7 +319,7 @@ export default function Home() {
               <button
                 key={industry}
                 onClick={() => handleIndustryClick(index)}
-                className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap ${
+                className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap cursor-pointer ${
                   selectedIndustryIndex === index
                     ? "bg-amber-600 text-stone-950 font-bold"
                     : "bg-stone-800 hover:bg-stone-700 text-stone-300"
@@ -425,7 +416,7 @@ export default function Home() {
               <button
                 key={step}
                 onClick={() => handleStepClick(index)}
-                className={`flex-1 p-4 rounded-sm border text-left transition-colors duration-300 ${
+                className={`flex-1 p-4 rounded-sm border text-left transition-colors duration-300 cursor-pointer ${
                   currentStepIndex === index
                     ? "bg-stone-800 border-amber-500"
                     : "bg-stone-900 border-stone-700 hover:bg-stone-800"
@@ -471,7 +462,7 @@ export default function Home() {
           </p>
           <button
             onClick={handleOpenModal}
-            className="px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg"
+            className="px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg cursor-pointer"
           >
             Request Early Access
           </button>
@@ -487,8 +478,12 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Modal Component */}
+      {/* Modal Components */}
       <EarlyAccessModal show={showModal} onClose={() => setShowModal(false)} />
+      <DemoVideoModal
+        show={showDemoModal}
+        onClose={() => setShowDemoModal(false)}
+      />
     </div>
   );
 }
