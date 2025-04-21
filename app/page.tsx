@@ -11,6 +11,7 @@ import WorkflowDetails from "./components/WorkflowDetails"; // Add this import a
 import RunWorkflowDetails, {
   WorkflowEvent,
 } from "./components/RunWorkflowDetails"; // Add this import at the top with other imports
+import Link from "next/link"; // Import Link component
 // font-[family-name:var(--font-geist-sans)]
 // font-[family-name:var(--font-geist-mono)]
 
@@ -474,9 +475,14 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-stone-800 mt-20 py-8 text-stone-500 text-sm">
-        <div className="max-w-4xl mx-auto flex items-center flex-col sm:flex-row px-8">
-          <div>kairos.computer</div>
-          {/* ... footer links ... */}
+        <div className="max-w-4xl mx-auto flex items-center justify-between flex-col sm:flex-row px-8">
+          <div>© {new Date().getFullYear()} Kairos Computer Inc.</div>
+          <Link
+            href="/privacy-policy"
+            className="mt-2 sm:mt-0 hover:text-amber-500 hover:underline"
+          >
+            Privacy Policy
+          </Link>
         </div>
       </footer>
 
