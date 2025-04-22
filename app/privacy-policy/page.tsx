@@ -446,7 +446,8 @@ export default function PrivacyPolicy() {
           <A href="https://developers.google.com/terms/api-services-user-data-policy#limited-use">
             Limited Use requirements
           </A>
-          .
+          . We affirm that information obtained via Google Workspace APIs is not
+          used to develop, improve, or train generalized AI and/or ML models.
         </P>
 
         {/* --- Section 2 --- */}
