@@ -477,12 +477,20 @@ export default function Home() {
       <footer className="border-t border-stone-800 mt-20 py-8 text-stone-500 text-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-col sm:flex-row px-8">
           <div>© {new Date().getFullYear()} Kairos Computer Inc.</div>
-          <Link
-            href="/privacy-policy"
-            className="mt-2 sm:mt-0 hover:text-amber-500 hover:underline"
-          >
-            Privacy Policy
-          </Link>
+          <div className="flex space-x-4 mt-2 sm:mt-0">
+            <Link
+              href="/privacy-policy"
+              className="hover:text-amber-500 hover:underline"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms-of-service"
+              className="hover:text-amber-500 hover:underline"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </footer>
 
