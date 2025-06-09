@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kairos",
-  description: "Proactive agents with full company context",
+  description: "Show it once. Automate it forever.",
 };
 
 export default function RootLayout({
