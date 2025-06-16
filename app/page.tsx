@@ -1,480 +1,826 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-// import Image from "next/image";
-// import HowItWorks from "./components/howitworks";
-// import ProblemSection from "./components/ProblemSection";
-// import KairosApproach from "./components/KairosApproach";
-import EarlyAccessModal from "./components/EarlyAccessModal"; // Import the modal
-import DemoVideoModal from "./components/DemoVideoModal"; // Add this import
-import WorkflowDetails from "./components/WorkflowDetails"; // Add this import at the top with other imports
-import RunWorkflowDetails, {
-  WorkflowEvent,
-} from "./components/RunWorkflowDetails"; // Add this import at the top with other imports
-import Link from "next/link"; // Import Link component
-// font-[family-name:var(--font-geist-sans)]
-// font-[family-name:var(--font-geist-mono)]
+import Link from "next/link";
+import { LiveAPIProvider } from "./contexts/LiveApiContext";
+import { getCreateWorkflowWebSocketUrl } from "./lib/livestream/websocket-connection";
+import { WorkflowRecorder } from "./components/WorkflowRecorder";
+import { logger } from "./lib/log";
 
-export default function Home() {
-  // --- State for modals ---
-  const [showModal, setShowModal] = useState(false);
-  const [showDemoModal, setShowDemoModal] = useState(false);
+type RecordingState =
+  | "INITIAL"
+  | "RECORDING"
+  | "POST_RECORDING"
+  | "PROCESSING"
+  | "WORKFLOW_READY";
 
-  // --- State for the interactive section ---
-  const industries = ["Finance", "E-Commerce", "HR", "Healthcare"];
-  const steps = [
-    "1. Show Kairos your task",
-    "2. Review your automation",
-    "3. Let Kairos handle it",
-  ];
-
-  // Mock video sources - replace with actual video URLs or components
-  const videoSources: Record<string, string[]> = {
-    Healthcare: [
-      "/videos/hc_step1.mp4",
-      "/videos/hc_step2.mp4",
-      "/videos/hc_step3.mp4",
-    ],
-    Finance: [
-      "/videos/fin_step1.mp4",
-      "/videos/fin_step2.mp4",
-      "/videos/fin_step3.mp4",
-    ],
-    "E-Commerce": [
-      "/videos/ecom_step1.mp4",
-      "/videos/ecom_step2.mp4",
-      "/videos/ecom_step3.mp4",
-    ],
-    HR: [
-      "/videos/hr_step1.mp4",
-      "/videos/hr_step2.mp4",
-      "/videos/hr_step3.mp4",
-    ],
+interface WorkflowData {
+  id: string;
+  name: string;
+  description: string;
+  outline?: string;
+  metadata?: {
+    inputs?: Array<{ key: string; value: string }>;
+    secure_inputs?: Array<{ key: string; value: string }>;
+    integrations?: string[];
+    [key: string]: unknown;
   };
+}
 
-  const workflowDetails = {
-    Healthcare: {
-      name: "Email Triage",
-      summary: "Triage emails from your inbox.",
-      inputs: ["Physician Email Address"],
-      integrations: ["Gmail", "Google Calendar"],
+function HomeContent() {
+  const [recordingState, setRecordingState] =
+    useState<RecordingState>("INITIAL");
+  const [generatedWorkflow, setGeneratedWorkflow] =
+    useState<WorkflowData | null>(null);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [recordingError, setRecordingError] = useState<string | null>(null);
+  const [processingStatus, setProcessingStatus] = useState<string>("");
+  const mediaBlobUrlRef = useRef<string | null>(null);
+
+  // Initialize the workflow recorder
+  const workflowRecorder = WorkflowRecorder({
+    onRecordingComplete: (blob: Blob) => {
+      setRecordedBlob(blob);
+      setRecordingState("POST_RECORDING");
+      setRecordingError(null);
+      logger.info("Recording complete, blob size:", blob.size);
     },
-    Finance: {
-      name: "Invoice Organization",
-      summary:
-        "Organizing your invoices from Gmail into Google Sheets and Drive",
-      inputs: ["Google Drive Link", "Google Sheets Link"],
-      integrations: ["Google Drive", "Google Sheets", "Gmail"],
+    onStateChange: (state) => {
+      if (state === "idle") {
+        setRecordingState("INITIAL");
+      } else if (state === "recording") {
+        setRecordingState("RECORDING");
+      }
     },
-    "E-Commerce": {
-      name: "E-Commerce Refunds",
-      summary: "Handle refund requests from customers in email.",
-      inputs: ["Refund Policy Link", "Google Sheets Link"],
-      integrations: ["Gmail", "Google Sheets"],
-    },
-    HR: {
-      name: "Applicant Screening",
-      summary: "Screen applicants for a Frontend Engineer role",
-      inputs: ["Google Sheets Link", "Hiring Page Link"],
-      integrations: ["Google Sheets"],
-    },
-  };
+  });
 
-  const runWorkflowDetails = {
-    Healthcare: {
-      inputs: {
-        "Physician Email Address": "physician@example.com",
-      },
-      events: [
-        {
-          title: "Workflow triggered from email",
-          description: "Found email with patient requesting an appointment.",
-          type: "STARTED",
-        },
-        {
-          title: "Checking Google Calendar",
-          description: "Finding available time slots.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Sending email",
-          description: "Replying to patient's question.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Workflow execution complete",
-          description: "Successfully processed invoice.",
-          type: "COMPLETED",
-        },
-      ],
-    },
-    Finance: {
-      inputs: {
-        "Google Drive Link": "https://drive.google.com/drive/folder/0/abc",
-        "Google Sheets Link": "https://docs.google.com/spreadsheets/d/abc",
-      },
-      events: [
-        {
-          title: "Workflow triggered from email",
-          description: "Found email with invoice attachment.",
-          type: "STARTED",
-        },
-        {
-          title: "Downloading invoice",
-          description: "Downloading invoice 'harris_invoice.pdf'.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Reading invoice",
-          description: "Extracting vendor name, date, amount and invoice id.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Uploading to Google Drive",
-          description:
-            "Uploading invoice with filename 'Harris Consulting_04/03/2024_3230.00'.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Updating Google Sheets",
-          description:
-            "Adding a new row to the sheet with the invoice details.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Workflow execution complete",
-          description: "Successfully processed invoice.",
-          type: "COMPLETED",
-        },
-      ],
-    },
-    "E-Commerce": {
-      inputs: {
-        "Refund Policy Link":
-          "https://kairos.notion.site/Refund-Policy-Link-1234567890",
-        "Google Sheets Link": "https://docs.google.com/spreadsheets/d/abc",
-      },
-      events: [
-        {
-          title: "Workflow triggered from email",
-          description: "Found email with refund request.",
-          type: "STARTED",
-        },
-        {
-          title: "Reviewing refund policy",
-          description:
-            "Checking if the refund policy allows for the requested refund.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Updating Google Sheets",
-          description: "Accepting refund request.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Sending email",
-          description:
-            "Replying to customer with acceptance of refund request.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Workflow execution complete",
-          description: "Successfully handled refund request.",
-          type: "COMPLETED",
-        },
-      ],
-    },
-    HR: {
-      inputs: {
-        "Google Sheets Link": "https://docs.google.com/spreadsheets/d/abc",
-        "Hiring Page Link":
-          "https://kairos.notion.site/Hiring-Page-Link-1234567890",
-      },
-      events: [
-        {
-          title: "Workflow triggered manually",
-          description: "Executing workflow.",
-          type: "STARTED",
-        },
-        {
-          title: "Reading role description",
-          description: "Extracting information about the role.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Reading Google Sheet",
-          description: "Extracting all applicant details.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Evaluating applicant profiles.",
-          description: "Reading LinkedIn, GitHub and resume of each applicant.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Updating Google Sheet with evaluations",
-          description: "Adding evaluation results to the sheet.",
-          type: "PROCESSING",
-        },
-        {
-          title: "Workflow execution complete",
-          description: "Successfully screened applicants.",
-          type: "COMPLETED",
-        },
-      ],
-    },
-  };
-
-  // Add descriptions for each industry workflow
-  const industryDescriptions: Record<string, string> = {
-    Healthcare:
-      "Respond to patients instantly and eliminate scheduling conflicts.",
-    Finance:
-      "Save hours weekly on invoice processing and eliminate data entry errors.",
-    "E-Commerce": "Handle customer refunds in minutes instead of hours.",
-    HR: "Screen candidates 5x faster and identify qualified applicants consistently.",
-  };
-
-  // Simplified state management with click-driven interaction
-  const [selectedIndustryIndex, setSelectedIndustryIndex] = useState(0);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const selectedIndustry = industries[selectedIndustryIndex];
-
-  // --- Handlers ---
-  const handleOpenModal = () => setShowModal(true);
-  const handleOpenDemoModal = () => setShowDemoModal(true);
-
-  // Handle industry tab selection
-  const handleIndustryClick = (index: number) => {
-    setSelectedIndustryIndex(index);
-    setCurrentStepIndex(0); // Reset to first step
-  };
-
-  // Handle step selection
-  const handleStepClick = (index: number) => {
-    setCurrentStepIndex(index);
-  };
-
-  // Timer for auto-progression through steps
+  // Clean up blob URL on unmount
   useEffect(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    timerRef.current = setTimeout(() => {
-      setCurrentStepIndex((prevIndex) => (prevIndex + 1) % steps.length);
-    }, 7000);
-
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
+      if (mediaBlobUrlRef.current) {
+        URL.revokeObjectURL(mediaBlobUrlRef.current);
       }
     };
-  }, [currentStepIndex, steps.length]);
+  }, []);
+
+  // Handlers for recording flow
+  const handleStartRecording = async () => {
+    setRecordingError(null);
+    // Reset the workflow recorder state to clear any previous errors
+    if (workflowRecorder.streamError) {
+      // Force a clean state by resetting everything
+      handleStartNew();
+      // Small delay to ensure cleanup completes
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    try {
+      await workflowRecorder.handleStartStreaming();
+    } catch (error) {
+      console.error("Failed to start recording:", error);
+      setRecordingError(
+        "Failed to start screen recording. Please ensure you grant screen sharing permission."
+      );
+      setRecordingState("INITIAL");
+    }
+  };
+
+  const handleStopRecording = () => {
+    workflowRecorder.handleStopStreaming();
+  };
+
+  const handleConfirm = async () => {
+    if (!recordedBlob) {
+      setRecordingError("No recording found");
+      return;
+    }
+
+    setRecordingState("PROCESSING");
+    setRecordingError(null);
+    setProcessingStatus("Creating workflow...");
+
+    try {
+      // 1. Create a new workflow
+      logger.info("Creating workflow...");
+      const createResponse = await fetch("/api/create-workflow", {
+        method: "POST",
+      });
+
+      if (!createResponse.ok) {
+        throw new Error("Failed to create workflow");
+      }
+
+      const { data: workflow } = await createResponse.json();
+      logger.info("Workflow created:", workflow.id);
+
+      // 2. Get presigned URL
+      setProcessingStatus("Getting upload URL...");
+      logger.info("Getting presigned URL...");
+      const presignedResponse = await fetch(
+        `/api/presigned-url?id=${workflow.id}`
+      );
+
+      if (!presignedResponse.ok) {
+        throw new Error("Failed to get presigned URL");
+      }
+
+      const { presigned_url } = await presignedResponse.json();
+      logger.info("Got presigned URL");
+
+      // 3. Upload video to presigned URL
+      setProcessingStatus("Uploading video...");
+      logger.info("Uploading video...");
+      const uploadResponse = await fetch(presigned_url, {
+        method: "PUT",
+        body: recordedBlob,
+        headers: {
+          "Content-Type": recordedBlob.type || "video/mp4",
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Failed to upload video: ${uploadResponse.statusText}`);
+      }
+      logger.info("Video uploaded successfully");
+
+      // 4. Poll for workflow processing completion
+      setProcessingStatus("Processing your workflow...");
+      logger.info("Polling for workflow processing...");
+      let processedWorkflow: WorkflowData | null = null;
+      const maxAttempts = 60; // 60 attempts, 2 seconds each = 2 minutes max
+      let attempts = 0;
+
+      while (attempts < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
+
+        const getWorkflowResponse = await fetch(
+          `/api/get-workflow?id=${workflow.id}`
+        );
+
+        if (!getWorkflowResponse.ok) {
+          logger.warn("Failed to get workflow status, retrying...");
+          attempts++;
+          continue;
+        }
+
+        const { data: workflowData } = await getWorkflowResponse.json();
+
+        if (workflowData.outline) {
+          logger.info("Workflow processing complete!");
+          processedWorkflow = workflowData;
+          break;
+        }
+
+        setProcessingStatus(
+          `Processing your workflow... (${Math.round(
+            (attempts / maxAttempts) * 100
+          )}%)`
+        );
+        logger.info(
+          `Still processing... (attempt ${attempts + 1}/${maxAttempts})`
+        );
+        attempts++;
+      }
+
+      if (!processedWorkflow) {
+        throw new Error("Workflow processing timed out");
+      }
+
+      // 5. Show the processed workflow
+      setGeneratedWorkflow(processedWorkflow);
+      setRecordingState("WORKFLOW_READY");
+
+      // Save workflow ID to cookie for app.kairos.computer
+      // Set expiration to 7 days from now
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 7);
+
+      document.cookie = `homepage_workflow_id=${
+        processedWorkflow.id
+      }; path=/; domain=.kairos.computer; expires=${expirationDate.toUTCString()}; SameSite=Lax`;
+    } catch (err) {
+      logger.error("Error processing workflow:", err);
+      setRecordingError(
+        err instanceof Error ? err.message : "Failed to process workflow"
+      );
+      setRecordingState("POST_RECORDING");
+    }
+  };
+
+  const handleRerecord = () => {
+    // Clean up previous recording
+    if (mediaBlobUrlRef.current) {
+      URL.revokeObjectURL(mediaBlobUrlRef.current);
+      mediaBlobUrlRef.current = null;
+    }
+    setRecordedBlob(null);
+    setRecordingError(null);
+    handleStartRecording();
+  };
+
+  const handleRunWorkflow = () => {
+    // In production, ensure workflow data is in cookies before redirect
+    window.location.href =
+      process.env.NODE_ENV === "production"
+        ? "https://app.kairos.computer"
+        : "http://app-dev.kairos.computer";
+  };
+
+  const handleStartNew = () => {
+    // Clean up
+    if (mediaBlobUrlRef.current) {
+      URL.revokeObjectURL(mediaBlobUrlRef.current);
+      mediaBlobUrlRef.current = null;
+    }
+    if (workflowRecorder.screenCaptureBlobUrl) {
+      URL.revokeObjectURL(workflowRecorder.screenCaptureBlobUrl);
+    }
+    setRecordingState("INITIAL");
+    setGeneratedWorkflow(null);
+    setRecordedBlob(null);
+    setRecordingError(null);
+    setProcessingStatus("");
+  };
+
+  // Example workflows data
+  const workflowCategories = [
+    "Sales & CRM",
+    "Finance",
+    "HR & Recruiting",
+    "Data Entry",
+  ];
+
+  const exampleWorkflows = {
+    "Sales & CRM": [
+      {
+        title: "Lead Enrichment",
+        description:
+          "Research new leads and update your CRM with company info, contact details, and more.",
+        time: "Saves 2 hours/day",
+      },
+      {
+        title: "Meeting Follow-ups",
+        description:
+          "Send personalized follow-up emails after meetings with action items and next steps.",
+        time: "Saves 30 min/meeting",
+      },
+      {
+        title: "Pipeline Updates",
+        description:
+          "Update deal stages and add notes in your CRM based on email conversations.",
+        time: "Saves 1 hour/day",
+      },
+    ],
+    Finance: [
+      {
+        title: "Invoice Processing",
+        description:
+          "Extract invoice data from emails and PDFs, then organize in spreadsheets and cloud storage.",
+        time: "Saves 3 hours/week",
+      },
+      {
+        title: "Expense Reports",
+        description:
+          "Compile receipts from various sources into formatted expense reports.",
+        time: "Saves 2 hours/month",
+      },
+    ],
+    "HR & Recruiting": [
+      {
+        title: "Resume Screening",
+        description:
+          "Review resumes against job requirements and organize qualified candidates.",
+        time: "Saves 5 hours/week",
+      },
+      {
+        title: "Interview Scheduling",
+        description:
+          "Coordinate calendars and send interview invites with all necessary details.",
+        time: "Saves 1 hour/day",
+      },
+      {
+        title: "Onboarding Tasks",
+        description:
+          "Send welcome emails, and assign initial tasks for new hires.",
+        time: "Saves 2 hours/hire",
+      },
+    ],
+    "Data Entry": [
+      {
+        title: "Form to Spreadsheet",
+        description:
+          "Transfer data from online forms into organized spreadsheets with validation.",
+        time: "Saves 4 hours/week",
+      },
+      {
+        title: "Document Extraction",
+        description:
+          "Extract key information from PDFs and enter into databases or CRMs.",
+        time: "Saves 3 hours/day",
+      },
+      {
+        title: "Contact Updates",
+        description:
+          "Update contact information across multiple systems from a single source.",
+        time: "Saves 2 hours/week",
+      },
+    ],
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState(
+    workflowCategories[0]
+  );
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-50 font-[family-name:var(--font-geist-mono)]">
-      {/* Hero section */}
-      <main className="max-w-4xl mx-auto pt-12 px-8">
-        <div className="mb-20">
-          <div className="mb-6">
-            <div className="text-3xl font-bold text-amber-500 mb-2">KAIROS</div>
-            <div className="text-sm text-stone-500">
-              {"// Automate tasks by recording your screen"}
-            </div>
-          </div>
-          <h1 className="text-3xl sm:text-5xl mb-6 font-bold">
-            Turn Repetitive Tasks into Automated Workflows.
-          </h1>
-          <p className="text-stone-400 text-xl mb-8">
-            Record and explain your task once. Kairos handles it forever. No
-            coding. No drag and drop. Just like training a co-worker.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={handleOpenModal}
-              className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
-            >
-              Request early access
-            </button>
-            <button
-              onClick={handleOpenDemoModal}
-              className="px-6 py-3 border border-stone-400 hover:bg-stone-800 rounded-sm cursor-pointer"
-            >
-              Watch a demo →
-            </button>
-          </div>
+      {/* Hidden canvas for video processing */}
+      <canvas
+        ref={workflowRecorder.videoFrameCanvasRef}
+        style={{ display: "none" }}
+      />
+
+      {/* Header */}
+      <header className="max-w-4xl mx-auto pt-8 px-8">
+        <div className="flex items-center justify-between">
+          <div className="text-2xl font-bold text-amber-500">KAIROS</div>
+          <Link
+            href="https://app.kairos.computer"
+            className="text-sm text-stone-400 hover:text-amber-500"
+          >
+            Sign in →
+          </Link>
         </div>
-      </main>
+      </header>
 
-      {/* Interactive Demo Section - Simplified */}
-      <div className="py-16 bg-stone-950">
-        <div className="max-w-4xl mx-auto px-8">
-          <h2 className="text-2xl mb-6 border-b border-stone-800 pb-2 text-stone-50">
-            ## See How You Can Automate Anything
-          </h2>
+      {/* Main content area - changes based on recording state */}
+      <main className="max-w-4xl mx-auto px-8 py-16">
+        {recordingState === "INITIAL" && (
+          <>
+            {/* Hero Section */}
+            <div className="text-center py-16">
+              <h1 className="text-4xl sm:text-6xl mb-6 font-bold leading-tight">
+                Turn Repetitive Tasks into
+                <br />
+                <span className="text-amber-500">Automated Workflows</span>
+              </h1>
+              <p className="text-stone-400 text-xl mb-24 max-w-2xl mx-auto">
+                Record your screen once. Kairos handles it forever.
+                <br />
+                No coding. No complex setup. Just show and tell.
+              </p>
 
-          {/* Industry Tabs */}
-          <div className="flex gap-2 pb-3 overflow-x-auto">
-            {industries.map((industry, index) => (
-              <button
-                key={industry}
-                onClick={() => handleIndustryClick(index)}
-                className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap cursor-pointer ${
-                  selectedIndustryIndex === index
-                    ? "bg-amber-600 text-stone-950 font-bold"
-                    : "bg-stone-800 hover:bg-stone-700 text-stone-300"
-                }`}
-              >
-                {industry}
-              </button>
-            ))}
-          </div>
-
-          {/* Workflow Description */}
-          <p className="text-stone-400 mb-6 text-sm md:text-base">
-            {industryDescriptions[selectedIndustry]}
-          </p>
-
-          {/* Video Player Area */}
-          <div className="bg-stone-800 border border-stone-700 rounded-sm mb-6 overflow-hidden flex flex-col h-[450px] sm:h-[500px]">
-            {/* Browser shell header */}
-            <div className="bg-stone-800 border-b border-stone-700 py-2 px-3 flex items-center flex-shrink-0">
-              {/* Traffic lights */}
-              <div className="flex space-x-1.5 sm:space-x-2 mr-2 sm:mr-4">
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
+              {/* Primary CTA */}
+              <div className="p-8 rounded-lg max-w-md mx-auto">
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold">Try it right now</h2>
+                </div>
+                <button
+                  onClick={handleStartRecording}
+                  disabled={workflowRecorder.liveAPIConnected}
+                  className="w-full px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg cursor-pointer transition-all transform hover:scale-105 disabled:opacity-50 shadow-lg"
+                >
+                  Start Recording Your Workflow
+                </button>
               </div>
 
-              {/* Address bar - adjusted padding/text size */}
-              <div className="flex-1 bg-stone-700 rounded-sm py-0.5 px-2 sm:py-1 sm:px-3 text-[10px] sm:text-xs text-stone-400 flex items-center">
-                <span className="mr-1 sm:mr-2 text-xs">🔒</span>
-                <span className="truncate">kairos.computer</span>
-              </div>
+              {(recordingError || workflowRecorder.streamError) && (
+                <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-sm max-w-md mx-auto">
+                  <p className="text-red-400 text-sm">
+                    {recordingError || workflowRecorder.streamError}
+                  </p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
-              {/* Browser actions - adjusted spacing/size */}
-              <div className="flex space-x-2 sm:space-x-3 ml-2 sm:ml-4 text-stone-400 text-xs sm:text-base">
-                <span>⟳</span>
-                <span>⋮</span>
+        {recordingState === "RECORDING" && (
+          <div className="text-center">
+            <div className="mb-8 inline-flex items-center gap-3 px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-sm">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+              <span className="text-red-400">
+                {workflowRecorder.liveAPIConnected
+                  ? "Streaming in progress"
+                  : "Connecting..."}
+              </span>
+            </div>
+            <h2 className="text-3xl mb-4 font-bold">
+              {workflowRecorder.liveAPIConnected
+                ? "Say hello to get started!"
+                : "Setting up your session..."}
+            </h2>
+            {workflowRecorder.liveAPIConnected ? (
+              <div className="text-stone-400 mb-8 max-w-2xl mx-auto">
+                <p className="text-lg mb-2">
+                  <span className="text-amber-500 font-semibold">Step 1:</span>{" "}
+                  Say &quot;Hi&quot; or &quot;Hello&quot;
+                </p>
+                <p className="text-sm mb-4 text-stone-500">
+                  Kairos will introduce itself and ask what you want to automate
+                </p>
+                <p className="text-lg mb-2">
+                  <span className="text-amber-500 font-semibold">Step 2:</span>{" "}
+                  Show your workflow
+                </p>
+                <p className="text-sm mb-4 text-stone-500">
+                  Navigate through your task while explaining each step
+                </p>
+                <p className="text-lg mb-2">
+                  <span className="text-amber-500 font-semibold">Step 3:</span>{" "}
+                  Click &quot;Stop Recording&quot;
+                </p>
+                <p className="text-sm text-stone-500">
+                  When you&apos;re done showing your workflow
+                </p>
               </div>
+            ) : (
+              <p className="text-stone-400 text-lg mb-8 max-w-2xl mx-auto">
+                Establishing connection to the live session...
+              </p>
+            )}
+            <div className="bg-stone-900 border border-stone-800 rounded-sm p-8 mb-8 max-w-2xl mx-auto">
+              {workflowRecorder.liveAPIConnected ? (
+                <>
+                  <div className="text-amber-500 text-5xl mb-4">👋</div>
+                  <p className="text-stone-300 text-lg mb-2">
+                    Kairos is listening
+                  </p>
+                  <p className="text-stone-500 text-sm">
+                    Say &quot;Hi&quot; to start the conversation
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="text-amber-500 text-6xl mb-4">🎥</div>
+                  <p className="text-stone-400">Establishing connection...</p>
+                </>
+              )}
             </div>
 
-            {/* Video content or WorkflowDetails depending on step */}
-            <div className="flex-1 bg-stone-800 flex items-center justify-center relative overflow-y-auto">
-              {currentStepIndex === 1 ? (
-                <WorkflowDetails
-                  workflowDetails={
-                    workflowDetails[
-                      selectedIndustry as keyof typeof workflowDetails
-                    ]
-                  }
-                />
-              ) : currentStepIndex === 2 ? (
-                <RunWorkflowDetails
-                  events={
-                    runWorkflowDetails[
-                      selectedIndustry as keyof typeof runWorkflowDetails
-                    ].events as WorkflowEvent[]
-                  }
-                />
-              ) : (
-                <video
-                  key={videoSources[selectedIndustry][currentStepIndex]}
-                  width="100%"
-                  height="100%"
-                  controls={false}
-                  autoPlay
-                  muted
-                  loop
-                  className="object-contain"
-                >
-                  <source
-                    src={videoSources[selectedIndustry][currentStepIndex]}
-                    type="video/mp4"
-                  />
-                  Your browser does not support the video tag.
-                </video>
-              )}
+            {workflowRecorder.streamError && (
+              <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-sm max-w-md mx-auto">
+                <p className="text-red-400 text-sm">
+                  {workflowRecorder.streamError}
+                </p>
+              </div>
+            )}
 
-              {/* Screen sharing notification - only show for step 1 - Improved Layout */}
-              {currentStepIndex === 0 && (
-                <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 bg-stone-800/90 backdrop-blur-sm text-white py-2 px-3 rounded-md shadow-lg flex items-center w-[90%] max-w-md sm:w-auto border border-stone-700">
-                  <div className="flex items-center text-center sm:text-left">
-                    <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></div>
-                    <span className="text-stone-300 text-xs sm:text-sm whitespace-normal sm:whitespace-nowrap">
-                      https://kairos.computer is sharing your screen
-                    </span>
+            <button
+              onClick={handleStopRecording}
+              className="px-6 py-3 bg-stone-800 hover:bg-stone-700 border border-stone-600 rounded-sm font-bold cursor-pointer"
+            >
+              Stop Recording
+            </button>
+          </div>
+        )}
+
+        {recordingState === "POST_RECORDING" && (
+          <div className="text-center">
+            <h2 className="text-3xl mb-4 font-bold">Recording Complete!</h2>
+            <p className="text-stone-400 text-lg mb-8 max-w-2xl mx-auto">
+              Great job! We captured your workflow. Would you like to proceed or
+              record again?
+            </p>
+
+            {workflowRecorder.screenCaptureBlobUrl && (
+              <div className="bg-stone-900 border border-stone-800 rounded-sm p-4 mb-8 max-w-2xl mx-auto">
+                <video
+                  src={workflowRecorder.screenCaptureBlobUrl}
+                  controls
+                  className="w-full rounded-sm"
+                  style={{ maxHeight: "400px" }}
+                />
+                <p className="text-stone-500 text-sm mt-2">
+                  Review your recording before proceeding
+                </p>
+              </div>
+            )}
+
+            {!workflowRecorder.screenCaptureBlobUrl && (
+              <div className="bg-stone-900 border border-stone-800 rounded-sm p-8 mb-8 max-w-2xl mx-auto">
+                <div className="text-green-500 text-6xl mb-4">✓</div>
+                <p className="text-stone-400">Recording saved successfully</p>
+              </div>
+            )}
+
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={handleRerecord}
+                className="px-6 py-3 border border-stone-600 hover:bg-stone-800 rounded-sm cursor-pointer"
+              >
+                Re-record
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
+              >
+                Create My Workflow
+              </button>
+            </div>
+
+            <button
+              onClick={handleStartNew}
+              className="mt-4 text-sm text-stone-500 hover:text-stone-400 cursor-pointer transition-colors"
+            >
+              Cancel and start over
+            </button>
+
+            {recordingError && (
+              <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-sm max-w-md mx-auto">
+                <p className="text-red-400 text-sm">{recordingError}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {recordingState === "PROCESSING" && (
+          <div className="text-center">
+            <h2 className="text-3xl mb-4 font-bold">Creating Your Workflow</h2>
+            <p className="text-stone-400 text-lg mb-8 max-w-2xl mx-auto">
+              Kairos is analyzing your recording and building an automated
+              workflow...
+            </p>
+            <div className="bg-stone-900 border border-stone-800 rounded-sm p-8 max-w-2xl mx-auto">
+              <div className="flex justify-center mb-4">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-stone-700 border-t-amber-500"></div>
+              </div>
+              <p className="text-stone-400">
+                {processingStatus || "This usually takes 10-30 seconds"}
+              </p>
+            </div>
+
+            {recordingError && (
+              <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-sm max-w-md mx-auto">
+                <p className="text-red-400 text-sm">{recordingError}</p>
+                <button
+                  onClick={() => setRecordingState("POST_RECORDING")}
+                  className="mt-4 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 border border-red-600/50 rounded-sm text-red-400 text-sm cursor-pointer"
+                >
+                  Go Back
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {recordingState === "WORKFLOW_READY" && generatedWorkflow && (
+          <div className="max-w-3xl mx-auto">
+            {/* Success Badge */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 border border-green-500/50 rounded-sm mb-4">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-green-400 text-sm">Workflow Ready</span>
+              </div>
+              <h2 className="text-3xl font-bold">Your Automation is Ready!</h2>
+            </div>
+
+            <div className="bg-stone-900 border border-stone-800 rounded-sm p-8 max-w-2xl mx-auto">
+              {/* Workflow Header */}
+              <div className="mb-6">
+                <div>
+                  <h1 className="text-xl font-bold text-amber-500 mb-2">
+                    {generatedWorkflow.name}
+                  </h1>
+                  <p className="text-sm text-stone-400">
+                    {generatedWorkflow.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Workflow Outline */}
+              {generatedWorkflow.outline && (
+                <div className="mb-6">
+                  <h2 className="mb-3 text-xs font-medium tracking-wider text-stone-500 uppercase">
+                    Workflow Details
+                  </h2>
+                  <div className="bg-stone-800 p-4 rounded-sm">
+                    <pre className="text-stone-300 text-sm whitespace-pre-wrap">
+                      {generatedWorkflow.outline}
+                    </pre>
                   </div>
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Step Indicators/Buttons - Progress Bar updated */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between mb-4">
-            {steps.map((step, index) => (
-              <button
-                key={step}
-                onClick={() => handleStepClick(index)}
-                className={`flex-1 p-4 rounded-sm border text-left transition-colors duration-300 cursor-pointer ${
-                  currentStepIndex === index
-                    ? "bg-stone-800 border-amber-500"
-                    : "bg-stone-900 border-stone-700 hover:bg-stone-800"
-                }`}
-              >
-                <div
-                  className={`text-sm font-bold mb-1 ${
-                    currentStepIndex === index
-                      ? "text-amber-500"
-                      : "text-stone-400"
-                  }`}
-                >
-                  STEP {index + 1}
-                </div>
-                <div className="text-stone-300">{step.substring(3)}</div>
-
-                {/* Progress Bar - Always animate when current step */}
-                {currentStepIndex === index && (
-                  <div className="mt-2 h-1 bg-stone-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-amber-500 animate-progress"
-                      style={{ animationDuration: "7s" }}
-                      key={`${selectedIndustry}-${currentStepIndex}`}
-                    ></div>
+              {/* Required Inputs Section */}
+              {generatedWorkflow.metadata?.inputs &&
+                generatedWorkflow.metadata.inputs.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="mb-3 text-xs font-medium tracking-wider text-stone-500 uppercase">
+                      Here&apos;s what I need from you
+                    </h2>
+                    <div className="space-y-3">
+                      {generatedWorkflow.metadata.inputs.map((input, index) => (
+                        <div key={index} className="space-y-1">
+                          <label className="text-xs font-medium text-stone-300">
+                            {input.key}
+                          </label>
+                          <input
+                            type="text"
+                            placeholder={input.value}
+                            className="w-full rounded-sm border border-stone-700 bg-stone-800 px-3 py-1.5 text-xs text-stone-200 shadow-sm transition-colors placeholder:text-stone-500 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                            readOnly
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
+
+              {/* Secure Inputs Section */}
+              {generatedWorkflow.metadata?.secure_inputs &&
+                generatedWorkflow.metadata.secure_inputs.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="mb-3 text-xs font-medium tracking-wider text-stone-500 uppercase">
+                      Secure Inputs Required
+                    </h2>
+                    <div className="space-y-3">
+                      {generatedWorkflow.metadata.secure_inputs.map(
+                        (input, index) => (
+                          <div key={index} className="space-y-1">
+                            <label className="text-xs font-medium text-stone-300 flex items-center gap-1">
+                              <span>🔒</span> {input.key}
+                            </label>
+                            <input
+                              type="password"
+                              placeholder={input.value}
+                              className="w-full rounded-sm border border-stone-700 bg-stone-800 px-3 py-1.5 text-xs text-stone-200 shadow-sm transition-colors placeholder:text-stone-500 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                              readOnly
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+
+              {/* Integrations Section */}
+              {generatedWorkflow.metadata?.integrations &&
+                generatedWorkflow.metadata.integrations.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="mb-3 text-xs font-medium tracking-wider text-stone-500 uppercase">
+                      I&apos;ll need to access these services
+                    </h2>
+                    <div className="space-y-2">
+                      {generatedWorkflow.metadata.integrations.map(
+                        (integration, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <div className="h-2 w-2 rounded-full bg-stone-600"></div>
+                            <span className="text-xs font-medium text-stone-300">
+                              {integration}
+                            </span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-8 flex flex-col items-center">
+              <p className="text-sm text-stone-400 mb-4">
+                Kairos is ready to automate this task forever.
+              </p>
+              <button
+                onClick={handleRunWorkflow}
+                className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-6 py-3 rounded-sm text-sm font-medium text-stone-950 shadow-sm transition-all hover:scale-105 active:scale-95"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Sign up to run this workflow
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* How it Works Section - Only show when not recording */}
+      {recordingState === "INITIAL" && (
+        <section className="py-20 bg-stone-900/50 border-y border-stone-800">
+          <div className="max-w-4xl mx-auto px-8">
+            <h2 className="text-3xl font-bold text-center mb-12">
+              How it Works
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="bg-stone-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🎥</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">1. Record</h3>
+                <p className="text-stone-400 text-sm">
+                  Click &quot;Start Recording&quot; and show Kairos your
+                  workflow while explaining each step
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-stone-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🤖</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">2. AI Learns</h3>
+                <p className="text-stone-400 text-sm">
+                  Our AI understands your process and creates a repeatable
+                  automation
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-stone-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🚀</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">3. Automate</h3>
+                <p className="text-stone-400 text-sm">
+                  Run your workflow anytime with one click - Kairos handles the
+                  rest
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Examples Section */}
+      <section className="py-20 border-t border-stone-800">
+        <div className="max-w-4xl mx-auto px-8">
+          <h2 className="text-2xl mb-2 font-bold">What Can You Automate?</h2>
+          <p className="text-stone-400 mb-8">
+            From simple data entry to complex multi-step processes, Kairos
+            handles it all.
+          </p>
+
+          {/* Category Tabs */}
+          <div className="flex gap-2 pb-3 overflow-x-auto mb-6 border-b border-stone-800">
+            {workflowCategories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap cursor-pointer transition-colors ${
+                  selectedCategory === category
+                    ? "bg-amber-600 text-stone-950 font-bold"
+                    : "bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-800"
+                }`}
+              >
+                {category}
               </button>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* --- Rest of the page content --- */}
-      <main className="max-w-4xl mx-auto px-8">
-        {/* CTA */}
-        <div className="mb-20 mt-20 text-center p-8 border border-stone-800 bg-stone-900 rounded-sm">
-          <h2 className="text-2xl mb-4">
-            Stop wasting hours on repetitive tasks.
+          {/* Workflow Cards */}
+          <div className="grid md:grid-cols-3 gap-4">
+            {exampleWorkflows[
+              selectedCategory as keyof typeof exampleWorkflows
+            ].map((workflow, index) => (
+              <div
+                key={index}
+                className="bg-stone-900 border border-stone-800 rounded-sm p-6 hover:border-stone-700 transition-colors"
+              >
+                <h3 className="text-lg font-bold mb-2 text-stone-50">
+                  {workflow.title}
+                </h3>
+                <p className="text-stone-400 text-sm mb-4">
+                  {workflow.description}
+                </p>
+                <div className="text-amber-500 text-sm font-bold">
+                  {workflow.time}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 border-t border-stone-800">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <h2 className="text-3xl mb-4 font-bold">
+            Ready to Automate Your Work?
           </h2>
-          <p className="text-stone-400 mb-8">
-            Join the early access program and reclaim your time for work that
-            actually matters.
+          <p className="text-stone-400 text-lg mb-8">
+            Start with a simple recording.
           </p>
           <button
-            onClick={handleOpenModal}
-            className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
+            onClick={() => {
+              setRecordingState("INITIAL");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg cursor-pointer transition-all transform hover:scale-105"
           >
-            Request Early Access
+            Try It Now
           </button>
-          <p className="mt-4 text-stone-500">Limited spots available</p>
         </div>
-      </main>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-stone-800 mt-20 py-8 text-stone-500 text-sm">
+      <footer className="border-t border-stone-800 py-8 text-stone-500 text-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between flex-col sm:flex-row px-8">
           <div>© {new Date().getFullYear()} Kairos Computer Inc.</div>
           <div className="flex space-x-4 mt-2 sm:mt-0">
@@ -493,13 +839,14 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Modal Components */}
-      <EarlyAccessModal show={showModal} onClose={() => setShowModal(false)} />
-      <DemoVideoModal
-        show={showDemoModal}
-        onClose={() => setShowDemoModal(false)}
-      />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <LiveAPIProvider url={getCreateWorkflowWebSocketUrl()}>
+      <HomeContent />
+    </LiveAPIProvider>
   );
 }
