@@ -80,7 +80,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
       if (evt.data instanceof Blob) {
         this.receive(evt.data);
       } else {
-        console.info("non blob message", evt);
+
       }
     });
     return new Promise((resolve, reject) => {
@@ -211,7 +211,7 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
         this.log(`server.content`, response);
       }
     } else {
-      console.info("received unmatched message", response);
+
     }
   }
 

@@ -76,7 +76,9 @@ export async function GET(req: Request) {
       }
     );
   } catch (e) {
-    console.error(`${e}`);
+    if (process.env.NODE_ENV === "development") {
+      console.error(`${e}`);
+    }
     return new Response(`Failed to generate image`, {
       status: 500,
     });

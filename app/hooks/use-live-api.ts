@@ -115,7 +115,6 @@ export function useLiveAPI({
         audioStreamerRef.current = new AudioStreamer(audioCtx);
         audioStreamerRef.current
           .addWorklet("vumeter-out", VolMeterWorket, (ev) => {
-            console.info(ev);
             setVolume(ev.data.volume);
           })
           .then(() => {
@@ -149,7 +148,6 @@ export function useLiveAPI({
   }, [client]);
 
   const connect = useCallback(async () => {
-    console.info(config);
     if (!config) {
       throw new Error("config has not been set");
     }

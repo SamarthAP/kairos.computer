@@ -15,7 +15,9 @@ const playSound = (soundFile: string) => {
   const audio = new Audio(soundFile);
   audio.volume = 0.2;
   audio.play().catch((error) => {
-    console.warn(`Failed to play sound ${soundFile}:`, error);
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`Failed to play sound ${soundFile}:`, error);
+    }
     // Optionally, you could notify the user or just log,
     // as autoplay policies can sometimes prevent sound.
   });
@@ -84,7 +86,9 @@ export function useScreenCapture({
     try {
       mic = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch {
-      console.warn("No mic found");
+      if (process.env.NODE_ENV === "development") {
+        console.warn("No mic found");
+      }
     }
 
     // mix into one track
