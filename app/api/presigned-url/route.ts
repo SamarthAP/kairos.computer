@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const API_URL = process.env.NODE_ENV === "production" ? "https://api.kairos.computer" : "https://api-dev.kairos.computer";
+const API_URL = process.env.NODE_ENV === "production" ? "https://api-prod.kairos.computer" : "https://api-dev.kairos.computer";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
