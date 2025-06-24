@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 import { LiveAPIProvider } from "./contexts/LiveApiContext";
 import { getCreateWorkflowWebSocketUrl } from "./lib/livestream/websocket-connection";
 import { WorkflowRecorder } from "./components/WorkflowRecorder";
@@ -347,7 +348,7 @@ function HomeContent() {
             href="https://app.kairos.computer"
             className="text-sm text-stone-400 hover:text-amber-500"
           >
-            Sign in →
+            Sign up / Login →
           </Link>
         </div>
       </header>
@@ -375,7 +376,10 @@ function HomeContent() {
                   <h2 className="text-xl font-semibold">Try it right now</h2>
                 </div>
                 <button
-                  onClick={handleStartRecording}
+                  onClick={() => {
+                    track("cta_start_recording");
+                    handleStartRecording();
+                  }}
                   disabled={workflowRecorder.liveAPIConnected}
                   className="w-full px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg cursor-pointer transition-all transform hover:scale-105 disabled:opacity-50 shadow-lg"
                 >
@@ -505,13 +509,19 @@ function HomeContent() {
 
             <div className="flex gap-4 justify-center">
               <button
-                onClick={handleRerecord}
+                onClick={() => {
+                  track("cta_rerecord");
+                  handleRerecord();
+                }}
                 className="px-6 py-3 border border-stone-600 hover:bg-stone-800 rounded-sm cursor-pointer"
               >
                 Re-record
               </button>
               <button
-                onClick={handleConfirm}
+                onClick={() => {
+                  track("cta_create_workflow");
+                  handleConfirm();
+                }}
                 className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold cursor-pointer"
               >
                 Create My Workflow
@@ -519,7 +529,10 @@ function HomeContent() {
             </div>
 
             <button
-              onClick={handleStartNew}
+              onClick={() => {
+                track("cta_start_over");
+                handleStartNew();
+              }}
               className="mt-4 text-sm text-stone-500 hover:text-stone-400 cursor-pointer transition-colors"
             >
               Cancel and start over
@@ -682,7 +695,10 @@ function HomeContent() {
                 Kairos is ready to automate this task forever.
               </p>
               <button
-                onClick={handleRunWorkflow}
+                onClick={() => {
+                  track("cta_sign_up_to_run_workflow");
+                  handleRunWorkflow();
+                }}
                 className="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 px-6 py-3 rounded-sm text-sm font-medium text-stone-950 shadow-sm transition-all hover:scale-105 active:scale-95"
               >
                 <svg
@@ -809,6 +825,7 @@ function HomeContent() {
           </p>
           <button
             onClick={() => {
+              track("cta_try_it_now");
               setRecordingState("INITIAL");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
