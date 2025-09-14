@@ -222,6 +222,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Templates Section */}
+      <section className="py-20 bg-stone-900/30 border-y border-stone-800">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Try Pre-Built Templates
+          </h2>
+          <p className="text-stone-400 text-lg mb-8 max-w-2xl mx-auto">
+            Don't want to start from scratch? Explore our official collection of ready-to-use automation templates.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              href="/templates"
+              className="px-8 py-4 bg-amber-600 hover:bg-amber-500 text-stone-950 rounded-sm font-bold text-lg transition-all transform hover:scale-105 shadow-lg"
+            >
+              Explore Templates →
+            </Link>
+           
+          </div>
+
+          {/* Feature highlights */}
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
+            <div className="text-center">
+              <div className="bg-stone-800 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-lg">⚡</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-1 text-stone-200">Ready to Use</h3>
+              <p className="text-stone-500 text-sm">
+                Pre-configured templates you can use immediately
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="bg-stone-800 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-lg">🎯</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-1 text-stone-200">Categorized</h3>
+              <p className="text-stone-500 text-sm">
+                Organized by domain for easy discovery
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="bg-stone-800 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-lg">🔧</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-1 text-stone-200">Customizable</h3>
+              <p className="text-stone-500 text-sm">
+                Modify templates to fit your specific needs
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 border-t border-stone-800">
         <div className="max-w-4xl mx-auto px-8 text-center">
