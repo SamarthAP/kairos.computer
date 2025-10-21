@@ -176,6 +176,9 @@ export default function TermsOfService() {
             <SectionLink href="#subscriptions">SUBSCRIPTIONS</SectionLink>
           </LI>
           <LI>
+            <SectionLink href="#sms">SMS/TEXT MESSAGING TERMS</SectionLink>
+          </LI>
+          <LI>
             <SectionLink href="#prohibited">PROHIBITED ACTIVITIES</SectionLink>
           </LI>
           <LI>
@@ -544,7 +547,50 @@ export default function TermsOfService() {
         </P>
 
         {/* --- Section 7 --- */}
-        <H2 id="prohibited">7. PROHIBITED ACTIVITIES</H2>
+        <H2 id="sms">7. SMS/TEXT MESSAGING TERMS</H2>
+        <P>
+          By providing your phone number and opting in to receive SMS
+          notifications from Kairos, you agree to these SMS Terms:
+        </P>
+        <UL>
+          <LI>
+            <Strong>Consent:</Strong> By providing your phone number and
+            checking the consent box, you expressly consent to receive automated
+            text messages from Kairos Computer Inc. regarding task updates,
+            reminders, and AI assistant notifications.
+          </LI>
+          <LI>
+            <Strong>Message Frequency:</Strong> Message frequency varies based
+            on your task activity. You may receive 1-5 messages per day on
+            average, though frequency may be higher or lower depending on your
+            usage.
+          </LI>
+          <LI>
+            <Strong>Message and Data Rates:</Strong> Standard message and data
+            rates may apply. Contact your mobile carrier for details about your
+            plan.
+          </LI>
+          <LI>
+            <Strong>Opt-Out:</Strong> You may opt out at any time by replying
+            STOP to any message.
+          </LI>
+          <LI>
+            <Strong>Opt-In:</Strong> Reply START to resubscribe after opting
+            out.
+          </LI>
+          <LI>
+            <Strong>Privacy:</Strong> Your phone number and messaging data will
+            be handled according to our Privacy Policy. We will never share your
+            phone number with third parties for marketing purposes.
+          </LI>
+          <LI>
+            <Strong>Changes:</Strong> We may modify these SMS terms with notice.
+            Continued use after changes constitutes acceptance.
+          </LI>
+        </UL>
+
+        {/* --- Section 8 --- */}
+        <H2 id="prohibited">8. PROHIBITED ACTIVITIES</H2>
         <P>
           You may not access or use the Services for any purpose other than that
           for which we make the Services available. The Services may not be used
@@ -663,8 +709,8 @@ export default function TermsOfService() {
           </LI>
         </UL>
 
-        {/* --- Section 8 --- */}
-        <H2 id="ugc">8. USER GENERATED CONTRIBUTIONS</H2>
+        {/* --- Section 9 --- */}
+        <H2 id="ugc">9. USER GENERATED CONTRIBUTIONS</H2>
         <P>
           The Services may invite you to chat, contribute to, or participate in
           blogs, message boards, online forums, and other functionality, and may
@@ -751,8 +797,8 @@ export default function TermsOfService() {
           suspension of your rights to use the Services.
         </P>
 
-        {/* --- Section 9 --- */}
-        <H2 id="license">9. CONTRIBUTION LICENSE</H2>
+        {/* --- Section 10 --- */}
+        <H2 id="license">10. CONTRIBUTION LICENSE</H2>
         <P>
           By posting your Contributions to any part of the Services or making
           Contributions accessible to the Services by linking your account from
@@ -798,8 +844,8 @@ export default function TermsOfService() {
           monitor your Contributions.
         </P>
 
-        {/* --- Section 10 --- */}
-        <H2 id="socialmedia">10. SOCIAL MEDIA</H2>
+        {/* --- Section 11 --- */}
+        <H2 id="socialmedia">11. SOCIAL MEDIA</H2>
         <P>
           As part of the functionality of the Services, you may link your
           account with online accounts you have with third-party service
@@ -852,8 +898,8 @@ export default function TermsOfService() {
           profile picture that become associated with your account.
         </P>
 
-        {/* --- Section 11 --- */}
-        <H2 id="thirdparty">11. THIRD-PARTY WEBSITES AND CONTENT</H2>
+        {/* --- Section 12 --- */}
+        <H2 id="thirdparty">12. THIRD-PARTY WEBSITES AND CONTENT</H2>
         <P>
           The Services may contain (or you may be sent via the Site) links to
           other websites (&apos;<Strong>Third-Party Websites</Strong>&apos;) as
@@ -889,8 +935,8 @@ export default function TermsOfService() {
           Content or any contact with Third-Party Websites.
         </P>
 
-        {/* --- Section 12 --- */}
-        <H2 id="sitemanage">12. SERVICES MANAGEMENT</H2>
+        {/* --- Section 13 --- */}
+        <H2 id="sitemanage">13. SERVICES MANAGEMENT</H2>
         <P>
           We reserve the right, but not the obligation, to: (1) monitor the
           Services for violations of these Legal Terms; (2) take appropriate
@@ -907,8 +953,8 @@ export default function TermsOfService() {
           and to facilitate the proper functioning of the Services.
         </P>
 
-        {/* --- Section 13 --- */}
-        <H2 id="ppno">13. PRIVACY POLICY</H2>
+        {/* --- Section 14 --- */}
+        <H2 id="ppno">14. PRIVACY POLICY</H2>
         <P>
           We care about data privacy and security. By using the Services, you
           agree to be bound by our{" "}
@@ -928,8 +974,8 @@ export default function TermsOfService() {
           transferred to and processed in the United States.
         </P>
 
-        {/* --- Section 14 --- */}
-        <H2 id="terms">14. TERM AND TERMINATION</H2>
+        {/* --- Section 15 --- */}
+        <H2 id="terms">15. TERM AND TERMINATION</H2>
         <P>
           These Legal Terms shall remain in full force and effect while you use
           the Services. WITHOUT LIMITING ANY OTHER PROVISION OF THESE LEGAL
@@ -953,8 +999,8 @@ export default function TermsOfService() {
           criminal, and injunctive redress.
         </P>
 
-        {/* --- Section 15 --- */}
-        <H2 id="modifications">15. MODIFICATIONS AND INTERRUPTIONS</H2>
+        {/* --- Section 16 --- */}
+        <H2 id="modifications">16. MODIFICATIONS AND INTERRUPTIONS</H2>
         <P>
           We reserve the right to change, modify, or remove the contents of the
           Services at any time or for any reason at our sole discretion without
@@ -978,8 +1024,8 @@ export default function TermsOfService() {
           connection therewith.
         </P>
 
-        {/* --- Section 16 --- */}
-        <H2 id="law">16. GOVERNING LAW</H2>
+        {/* --- Section 17 --- */}
+        <H2 id="law">17. GOVERNING LAW</H2>
         <P>
           These Legal Terms and your use of the Services are governed by and
           construed in accordance with the laws of the State of California
@@ -987,8 +1033,8 @@ export default function TermsOfService() {
           State of California, without regard to its conflict of law principles.
         </P>
 
-        {/* --- Section 17 --- */}
-        <H2 id="disputes">17. DISPUTE RESOLUTION</H2>
+        {/* --- Section 18 --- */}
+        <H2 id="disputes">18. DISPUTE RESOLUTION</H2>
         <H3>Informal Negotiations</H3>
         <P>
           To expedite resolution and control the cost of any dispute,
@@ -1085,8 +1131,8 @@ export default function TermsOfService() {
           that court.
         </P>
 
-        {/* --- Section 18 --- */}
-        <H2 id="corrections">18. CORRECTIONS</H2>
+        {/* --- Section 19 --- */}
+        <H2 id="corrections">19. CORRECTIONS</H2>
         <P>
           There may be information on the Services that contains typographical
           errors, inaccuracies, or omissions, including descriptions, pricing,
@@ -1095,8 +1141,8 @@ export default function TermsOfService() {
           the information on the Services at any time, without prior notice.
         </P>
 
-        {/* --- Section 19 --- */}
-        <H2 id="disclaimer">19. DISCLAIMER</H2>
+        {/* --- Section 20 --- */}
+        <H2 id="disclaimer">20. DISCLAIMER</H2>
         <P>
           THE SERVICES ARE PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS. YOU
           AGREE THAT YOUR USE OF THE SERVICES WILL BE AT YOUR SOLE RISK. TO THE
@@ -1130,8 +1176,8 @@ export default function TermsOfService() {
           EXERCISE CAUTION WHERE APPROPRIATE.
         </P>
 
-        {/* --- Section 20 --- */}
-        <H2 id="liability">20. LIMITATIONS OF LIABILITY</H2>
+        {/* --- Section 21 --- */}
+        <H2 id="liability">21. LIMITATIONS OF LIABILITY</H2>
         <P>
           IN NO EVENT WILL WE OR OUR DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE
           TO YOU OR ANY THIRD PARTY FOR ANY DIRECT, INDIRECT, CONSEQUENTIAL,
@@ -1149,8 +1195,8 @@ export default function TermsOfService() {
           YOU MAY HAVE ADDITIONAL RIGHTS.
         </P>
 
-        {/* --- Section 21 --- */}
-        <H2 id="indemnification">21. INDEMNIFICATION</H2>
+        {/* --- Section 22 --- */}
+        <H2 id="indemnification">22. INDEMNIFICATION</H2>
         <P>
           You agree to defend, indemnify, and hold us harmless, including our
           subsidiaries, affiliates, and all of our respective officers, agents,
@@ -1171,8 +1217,8 @@ export default function TermsOfService() {
           upon becoming aware of it.
         </P>
 
-        {/* --- Section 22 --- */}
-        <H2 id="userdata">22. USER DATA</H2>
+        {/* --- Section 23 --- */}
+        <H2 id="userdata">23. USER DATA</H2>
         <P>
           We will maintain certain data that you transmit to the Services for
           the purpose of managing the performance of the Services, as well as
@@ -1185,9 +1231,9 @@ export default function TermsOfService() {
           data.
         </P>
 
-        {/* --- Section 23 --- */}
+        {/* --- Section 24 --- */}
         <H2 id="electronic">
-          23. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
+          24. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
         </H2>
         <P>
           Visiting the Services, sending us emails, and completing online forms
@@ -1206,8 +1252,8 @@ export default function TermsOfService() {
           any means other than electronic means.
         </P>
 
-        {/* --- Section 24 --- */}
-        <H2 id="california">24. CALIFORNIA USERS AND RESIDENTS</H2>
+        {/* --- Section 25 --- */}
+        <H2 id="california">25. CALIFORNIA USERS AND RESIDENTS</H2>
         <P>
           If any complaint with us is not satisfactorily resolved, you can
           contact the Complaint Assistance Unit of the Division of Consumer
@@ -1216,8 +1262,8 @@ export default function TermsOfService() {
           or by telephone at (800) 952-5210 or (916) 445-1254.
         </P>
 
-        {/* --- Section 25 --- */}
-        <H2 id="misc">25. MISCELLANEOUS</H2>
+        {/* --- Section 26 --- */}
+        <H2 id="misc">26. MISCELLANEOUS</H2>
         <P>
           These Legal Terms and any policies or operating rules posted by us on
           the Services or in respect to the Services constitute the entire
@@ -1241,8 +1287,8 @@ export default function TermsOfService() {
           hereto to execute these Legal Terms.
         </P>
 
-        {/* --- Section 26 --- */}
-        <H2 id="contact">26. CONTACT US</H2>
+        {/* --- Section 27 --- */}
+        <H2 id="contact">27. CONTACT US</H2>
         <P>
           In order to resolve a complaint regarding the Services or to receive
           further information regarding use of the Services, please contact us
