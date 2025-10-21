@@ -263,6 +263,11 @@ export default function PrivacyPolicy() {
             </SectionLink>
           </LI>
           <LI>
+            <SectionLink href="#smsdata">
+              SMS DATA AND COMMUNICATIONS
+            </SectionLink>
+          </LI>
+          <LI>
             <SectionLink href="#inforetain">
               HOW LONG DO WE KEEP YOUR INFORMATION?
             </SectionLink>
@@ -345,7 +350,14 @@ export default function PrivacyPolicy() {
           <LI>email addresses</LI>
           <LI>usernames</LI>
           <LI>passwords</LI>
+          <LI>phone numbers</LI>
         </UL>
+        <P>
+          <Strong>Phone Numbers.</Strong> We collect your mobile phone number when
+          you opt-in to receive SMS notifications about your tasks and AI assistant
+          activities. This is collected with your explicit consent during account
+          setup or in your account settings.
+        </P>
         <P id="sensitiveinfo">
           <Strong>Sensitive Information.</Strong> When necessary, with your
           consent or as otherwise permitted by applicable law, we process the
@@ -492,6 +504,19 @@ export default function PrivacyPolicy() {
             </Strong>{" "}
             We may process your information when necessary to save or protect an
             individual&apos;s vital interest, such as to prevent harm.
+          </LI>
+          <LI>
+            <Strong>SMS Communications.</Strong> We use your phone number to send
+            automated text messages about:
+            <UL>
+              <LI>Task creation and updates</LI>
+              <LI>Reminders and notifications</LI>
+              <LI>AI assistant activity alerts</LI>
+              <LI>Account security notifications</LI>
+              <LI>Responses to your text message inquiries</LI>
+            </UL>
+            We only send SMS messages to users who have explicitly opted in.
+            Message frequency varies based on your activity.
           </LI>
         </UL>
 
@@ -819,7 +844,35 @@ export default function PrivacyPolicy() {
         </P>
 
         {/* --- Section 8 --- */}
-        <H2 id="inforetain">8. HOW LONG DO WE KEEP YOUR INFORMATION?</H2>
+        <H2 id="smsdata">8. SMS DATA AND COMMUNICATIONS</H2>
+        <P>
+          <Strong>
+            <em className="text-stone-300">In Short:</em>
+          </Strong>{" "}
+          <em className="text-stone-400">
+            We collect and process your phone number to send you SMS notifications
+            when you opt-in to this feature.
+          </em>
+        </P>
+        <P>When you opt-in to receive text messages:</P>
+        <UL>
+          <LI>We store your phone number securely in our database</LI>
+          <LI>We log SMS delivery status and opt-in/out preferences</LI>
+          <LI>We process inbound messages (like STOP or task updates)</LI>
+        </UL>
+        <P>
+          You control your SMS preferences and can opt-out anytime by:
+        </P>
+        <UL>
+          <LI>Texting STOP to any message</LI>
+        </UL>
+        <P>
+          Standard message and data rates apply. Message frequency varies based on
+          account activity.
+        </P>
+
+        {/* --- Section 9 --- */}
+        <H2 id="inforetain">9. HOW LONG DO WE KEEP YOUR INFORMATION?</H2>
         <P>
           <Strong>
             <em className="text-stone-300">In Short:</em>
@@ -847,8 +900,8 @@ export default function PrivacyPolicy() {
           further processing until deletion is possible.
         </P>
 
-        {/* --- Section 9 --- */}
-        <H2 id="infosafe">9. HOW DO WE KEEP YOUR INFORMATION SAFE?</H2>
+        {/* --- Section 10 --- */}
+        <H2 id="infosafe">10. HOW DO WE KEEP YOUR INFORMATION SAFE?</H2>
         <P>
           <Strong>
             <em className="text-stone-300">In Short:</em>
@@ -873,8 +926,8 @@ export default function PrivacyPolicy() {
           within a secure environment.
         </P>
 
-        {/* --- Section 10 --- */}
-        <H2 id="infominors">10. DO WE COLLECT INFORMATION FROM MINORS?</H2>
+        {/* --- Section 11 --- */}
+        <H2 id="infominors">11. DO WE COLLECT INFORMATION FROM MINORS?</H2>
         <P>
           <Strong>
             <em className="text-stone-300">In Short:</em>
@@ -898,8 +951,8 @@ export default function PrivacyPolicy() {
           <A href="mailto:manas@kairos.computer">manas@kairos.computer</A>.
         </P>
 
-        {/* --- Section 11 --- */}
-        <H2 id="privacyrights">11. WHAT ARE YOUR PRIVACY RIGHTS?</H2>
+        {/* --- Section 12 --- */}
+        <H2 id="privacyrights">12. WHAT ARE YOUR PRIVACY RIGHTS?</H2>
         <P>
           <Strong>
             <em className="text-stone-300">In Short:</em>
@@ -1014,8 +1067,8 @@ export default function PrivacyPolicy() {
           <A href="mailto:manas@kairos.computer">manas@kairos.computer</A>.
         </P>
 
-        {/* --- Section 12 --- */}
-        <H2 id="DNT">12. CONTROLS FOR DO-NOT-TRACK FEATURES</H2>
+        {/* --- Section 13 --- */}
+        <H2 id="DNT">13. CONTROLS FOR DO-NOT-TRACK FEATURES</H2>
         <P>
           Most web browsers and some mobile operating systems and mobile
           applications include a Do-Not-Track (&apos;DNT&apos;) feature or
@@ -1036,9 +1089,9 @@ export default function PrivacyPolicy() {
           respond to them at this time.
         </P>
 
-        {/* --- Section 13 --- */}
+        {/* --- Section 14 --- */}
         <H2 id="uslaws">
-          13. DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
+          14. DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
         </H2>
         <P>
           <Strong>
@@ -1441,9 +1494,9 @@ export default function PrivacyPolicy() {
           &apos;.
         </P>
 
-        {/* --- Section 14 --- */}
+        {/* --- Section 15 --- */}
         <H2 id="otherlaws">
-          14. DO OTHER REGIONS HAVE SPECIFIC PRIVACY RIGHTS?
+          15. DO OTHER REGIONS HAVE SPECIFIC PRIVACY RIGHTS?
         </H2>
         <P>
           <Strong>
@@ -1533,8 +1586,8 @@ export default function PrivacyPolicy() {
           </A>
         </P>
 
-        {/* --- Section 15 --- */}
-        <H2 id="policyupdates">15. DO WE MAKE UPDATES TO THIS NOTICE?</H2>
+        {/* --- Section 16 --- */}
+        <H2 id="policyupdates">16. DO WE MAKE UPDATES TO THIS NOTICE?</H2>
         <P>
           <Strong>
             <em className="text-stone-300">In Short:</em>
@@ -1554,8 +1607,8 @@ export default function PrivacyPolicy() {
           of how we are protecting your information.
         </P>
 
-        {/* --- Section 16 --- */}
-        <H2 id="contact">16. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</H2>
+        {/* --- Section 17 --- */}
+        <H2 id="contact">17. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</H2>
         <P>
           If you have questions or comments about this notice, you may email us
           at <A href="mailto:manas@kairos.computer">manas@kairos.computer</A> or
@@ -1571,9 +1624,9 @@ export default function PrivacyPolicy() {
           United States
         </P>
 
-        {/* --- Section 17 --- */}
+        {/* --- Section 18 --- */}
         <H2 id="request">
-          17. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM
+          18. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM
           YOU?
         </H2>
         <P>
